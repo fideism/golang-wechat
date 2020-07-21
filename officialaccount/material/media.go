@@ -81,8 +81,8 @@ type resMediaImage struct {
 	URL string `json:"url"`
 }
 
-//ImageUpload 图片上传
-func (material *Material) ImageUpload(filename string) (url string, err error) {
+//UploadImage 图片上传
+func (material *Material) UploadImage(filename string) (url string, err error) {
 	var accessToken string
 	accessToken, err = material.GetAccessToken()
 	if err != nil {

@@ -1,6 +1,7 @@
 package officialaccount
 
 import (
+	"github.com/fideism/golang-wechat/officialaccount/card"
 	"net/http"
 
 	"github.com/fideism/golang-wechat/officialaccount/datacube"
@@ -107,4 +108,9 @@ func (officialAccount *OfficialAccount) GetBroadcast() *broadcast.Broadcast {
 //GetDataCube 数据统计
 func (officialAccount *OfficialAccount) GetDataCube() *datacube.DataCube {
 	return datacube.NewCube(officialAccount.ctx)
+}
+
+// GetCard 卡券
+func (officialAccount *OfficialAccount) GetCard() *card.Card {
+	return card.NewCard(officialAccount.ctx)
 }
