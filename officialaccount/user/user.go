@@ -136,7 +136,7 @@ func (user *User) ListUserOpenIDs(nextOpenid ...string) (*OpenidList, error) {
 // ListAllUserOpenIDs 返回所有用户OpenID列表
 func (user *User) ListAllUserOpenIDs() ([]string, error) {
 	nextOpenid := ""
-	openids := []string{}
+	var openids []string
 	count := 0
 	for {
 		ul, err := user.ListUserOpenIDs(nextOpenid)
