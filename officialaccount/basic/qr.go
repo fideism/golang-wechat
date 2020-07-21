@@ -14,18 +14,24 @@ const (
 	getQRImgURL = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=%s"
 )
 
-const (
-	actionID  = "QR_SCENE"
-	actionStr = "QR_STR_SCENE"
+// QrActionName action_name 二维码类型
+type QrActionName string
 
-	actionLimitID  = "QR_LIMIT_SCENE"
-	actionLimitStr = "QR_LIMIT_STR_SCENE"
+const (
+	// QrActionScene QR_SCENE为临时的整型参数值
+	QrActionScene QrActionName = "QR_SCENE"
+	// QrActionStrScene QR_STR_SCENE为临时的字符串参数值
+	QrActionStrScene QrActionName = "QR_STR_SCENE"
+	// QrActionLimitScene QR_LIMIT_SCENE为永久的整型参数值
+	QrActionLimitScene QrActionName = "QR_LIMIT_SCENE"
+	// QrActionLimitStrScene QR_LIMIT_STR_SCENE为永久的字符串参数值
+	QrActionLimitStrScene QrActionName = "QR_LIMIT_STR_SCENE"
 )
 
 // Request 临时二维码
 type Request struct {
-	ExpireSeconds int64  `json:"expire_seconds,omitempty"`
-	ActionName    string `json:"action_name"`
+	ExpireSeconds int64        `json:"expire_seconds,omitempty"`
+	ActionName    QrActionName `json:"action_name"`
 	ActionInfo    struct {
 		Scene struct {
 			SceneStr string `json:"scene_str,omitempty"`
@@ -77,13 +83,13 @@ func NewTmpQrRequest(exp time.Duration, scene interface{}) *Request {
 	}
 	switch reflect.ValueOf(scene).Kind() {
 	case reflect.String:
-		tq.ActionName = actionStr
+		tq.ActionName = QrActionStrScene
 		tq.ActionInfo.Scene.SceneStr = scene.(string)
 	case reflect.Int, reflect.Int8, reflect.Int16,
 		reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16,
 		reflect.Uint32, reflect.Uint64:
-		tq.ActionName = actionID
+		tq.ActionName = QrActionScene
 		tq.ActionInfo.Scene.SceneID = scene.(int)
 	}
 
@@ -95,13 +101,13 @@ func NewLimitQrRequest(scene interface{}) *Request {
 	tq := &Request{}
 	switch reflect.ValueOf(scene).Kind() {
 	case reflect.String:
-		tq.ActionName = actionLimitStr
+		tq.ActionName = QrActionLimitStrScene
 		tq.ActionInfo.Scene.SceneStr = scene.(string)
 	case reflect.Int, reflect.Int8, reflect.Int16,
 		reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16,
 		reflect.Uint32, reflect.Uint64:
-		tq.ActionName = actionLimitID
+		tq.ActionName = QrActionLimitScene
 		tq.ActionInfo.Scene.SceneID = scene.(int)
 	}
 

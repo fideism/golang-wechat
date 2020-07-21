@@ -1,4 +1,8 @@
 go.sum
 .vscode/
 .idea/
+<<<<<<< HEAD
 test/
+=======
+test/
+>>>>>>> ab3c5799693c669ca46f2f759fc28f67a35e865c
