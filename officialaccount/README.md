@@ -9,6 +9,14 @@
 - [清理接口调用频次](#清理接口调用频次)
 - [带参数二维码](#带参数二维码)
 - [用户](#用户)
+- [菜单](#菜单)
+- [oauth2网页授权](#oauth2网页授权)
+- [素材管理](#素材管理)
+- [js-sdk配置](#js-sdk配置)
+- [群发消息](#群发消息)
+- [模板消息接口](#模板消息接口)
+- [获取智能设备的实例](#获取智能设备的实例)
+- [数据统计](#数据统计)
 
 
 ## 快速入门
@@ -41,10 +49,20 @@ func main() {
 }
 ```
 
+`content` 获取
+```go
+func (officialAccount *OfficialAccount) GetContext() *context.Context
+```
+
 ### Token
 
 ```
 token, err := officail.GetAccessToken()
+```
+
+自定义`token`获取方式
+```go
+func (officialAccount *OfficialAccount) SetAccessTokenHandle(accessTokenHandle credential.AccessTokenHandle)
 ```
 
 ### 获取微信服务器IP地址
@@ -98,12 +116,13 @@ qrcode_url := basic.ShowQRCode(ticket)
 ```
 
 ### 用户
+```go
+func (officialAccount *OfficialAccount) GetUser() *user.User
 
+```
 - 用户列表
 
 ```go
-users := officail.GetUser()
-
 // 所有用户openids列表
 func (user *User) ListAllUserOpenIDs() ([]string, error)
 
@@ -119,4 +138,44 @@ func (user *User) GetUserInfo(openID string) (userInfo *Info, err error)
 - 对指定用户设置备注名
 ```go
 func (user *User) UpdateRemark(openID, remark string) (err error)
+```
+
+### 菜单
+```go
+func (officialAccount *OfficialAccount) GetMenu() *menu.Menu
+```
+
+### oauth2网页授权
+```go
+func (officialAccount *OfficialAccount) GetOauth() *oauth.Oauth
+```
+
+### 素材管理
+```go
+func (officialAccount *OfficialAccount) GetMaterial() *material.Material
+```
+
+### js-sdk配置
+```go
+func (officialAccount *OfficialAccount) GetJs() *js.Js
+```
+
+### 群发消息
+```go
+func (officialAccount *OfficialAccount) GetBroadcast() *broadcast.Broadcast
+```
+
+### 模板消息接口
+```go
+func (officialAccount *OfficialAccount) GetTemplate() *message.Template
+```
+
+### 获取智能设备的实例
+```go
+func (officialAccount *OfficialAccount) GetDevice() *device.Device
+```
+
+### 数据统计
+```go
+func (officialAccount *OfficialAccount) GetDataCube() *datacube.DataCube
 ```
