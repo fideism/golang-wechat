@@ -42,10 +42,10 @@ type Request struct {
 
 // Ticket 二维码ticket
 type Ticket struct {
-	util.CommonError `json:",inline"`
-	Ticket           string `json:"ticket"`
-	ExpireSeconds    int64  `json:"expire_seconds"`
-	URL              string `json:"url"`
+	util.CommonError
+	Ticket        string `json:"ticket"`
+	ExpireSeconds int64  `json:"expire_seconds"`
+	URL           string `json:"url"`
 }
 
 // GetQRTicket 获取二维码 Ticket
