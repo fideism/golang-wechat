@@ -1,5 +1,10 @@
 # WeChat SDK for Go
 
+:clap::clap::clap: Golang Wechat SDK 
+
+[![golang](https://img.shields.io/badge/Language-Go-green.svg?style=flat)](https://golang.org)
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
+
 ## 目录
 - [缓存](./cache)
 - [基础信息(access_token，js_ticket)](./credential)
@@ -79,5 +84,5 @@ func main() {
 
 可以通过设置系统`LOG_LEVEL`来控制日志记录
 
-### Based On
+### Based On :thumbsup:
 [silenceper/wechat](https://github.com/silenceper/wechat) 
