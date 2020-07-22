@@ -13,6 +13,11 @@ const (
 	userInfoURL     = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN"
 	updateRemarkURL = "https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=%s"
 	userListURL     = "https://api.weixin.qq.com/cgi-bin/user/get"
+	createTagURL    = "https://api.weixin.qq.com/cgi-bin/tags/create?access_token=%s"
+	tagListURL      = "https://api.weixin.qq.com/cgi-bin/tags/get?access_token=%s"
+	updateTagURL    = "https://api.weixin.qq.com/cgi-bin/tags/update?access_token=%s"
+	deleteTagURL    = "https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=%s"
+	tagUserListURL  = "https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=%s"
 )
 
 //User 用户管理
@@ -151,4 +156,175 @@ func (user *User) ListAllUserOpenIDs() ([]string, error) {
 			return openids, nil
 		}
 	}
+}
+
+// Tag 标签
+type Tag struct {
+	ID    int64  `json:"id"`
+	Name  string `json:"name"`
+	Count int64  `json:"count"`
+}
+
+// CreateTag 创建标签
+func (user *User) CreateTag(name string) (tag Tag, err error) {
+	var accessToken string
+	accessToken, err = user.GetAccessToken()
+	if err != nil {
+		return
+	}
+
+	uri := fmt.Sprintf(createTagURL, accessToken)
+	var response []byte
+	response, err = util.PostJSON(uri, map[string]interface{}{
+		"tag": map[string]string{
+			"name": name,
+		},
+	})
+
+	if err != nil {
+		return
+	}
+
+	var res struct {
+		util.CommonError
+		Tag Tag `json:"tag"`
+	}
+
+	err = json.Unmarshal(response, &res)
+	if err != nil {
+		return
+	}
+
+	tag = res.Tag
+
+	return
+}
+
+// TagList 标签列表
+func (user *User) TagList() (tags []Tag, err error) {
+	var accessToken string
+	accessToken, err = user.GetAccessToken()
+	if err != nil {
+		return
+	}
+
+	uri := fmt.Sprintf(tagListURL, accessToken)
+	var response []byte
+	response, err = util.HTTPGet(uri)
+
+	if err != nil {
+		return
+	}
+
+	var res struct {
+		util.CommonError
+		Tags []Tag `json:"tags"`
+	}
+
+	err = json.Unmarshal(response, &res)
+	if err != nil {
+		return
+	}
+
+	tags = res.Tags
+
+	return
+}
+
+// UpdateTag 修改标签
+func (user *User) UpdateTag(tagID int, name string) (err error) {
+	var accessToken string
+	accessToken, err = user.GetAccessToken()
+	if err != nil {
+		return
+	}
+
+	uri := fmt.Sprintf(updateTagURL, accessToken)
+	var response []byte
+	response, err = util.PostJSON(uri, map[string]interface{}{
+		"tag": map[string]interface{}{
+			"id":   tagID,
+			"name": name,
+		},
+	})
+
+	if err != nil {
+		return
+	}
+
+	var res util.CommonError
+
+	err = json.Unmarshal(response, &res)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+// DeleteTag 删除标签
+func (user *User) DeleteTag(tagID int) (err error) {
+	var accessToken string
+	accessToken, err = user.GetAccessToken()
+	if err != nil {
+		return
+	}
+
+	uri := fmt.Sprintf(deleteTagURL, accessToken)
+	var response []byte
+	response, err = util.PostJSON(uri, map[string]interface{}{
+		"tag": map[string]int{
+			"id": tagID,
+		},
+	})
+
+	if err != nil {
+		return
+	}
+
+	var res util.CommonError
+
+	err = json.Unmarshal(response, &res)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+// TagUser 标签用户
+type TagUser struct {
+	Count int `json:"count"`
+	Data  struct {
+		Openid []string `json:"openid"`
+	} `json:"data"`
+	NextOpenID string `json:"next_openid"`
+}
+
+// TagUserList 获取标签下粉丝列表
+func (user *User) TagUserList(tagID int, openid string) (res TagUser, err error) {
+	var accessToken string
+	accessToken, err = user.GetAccessToken()
+	if err != nil {
+		return
+	}
+
+	uri := fmt.Sprintf(tagUserListURL, accessToken)
+	fmt.Println(uri)
+	var response []byte
+	response, err = util.PostJSON(uri, map[string]interface{}{
+		"tagid":       tagID,
+		"next_openid": openid,
+	})
+
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(response, &res)
+	if err != nil {
+		return
+	}
+
+	return
 }

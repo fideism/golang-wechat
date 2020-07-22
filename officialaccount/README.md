@@ -141,6 +141,53 @@ func (user *User) GetUserInfo(openID string) (userInfo *Info, err error)
 func (user *User) UpdateRemark(openID, remark string) (err error)
 ```
 
+- 新增`tag`
+```go
+type Tag struct {
+	ID    int64  `json:"id"`
+	Name  string `json:"name"`
+	Count int64  `json:"count"`
+}
+
+func (user *User) CreateTag(name string) (tag Tag, err error)
+```
+
+- `tag`列表
+```go
+type Tag struct {
+	ID    int64  `json:"id"`
+	Name  string `json:"name"`
+	Count int64  `json:"count"`
+}
+
+func (user *User) TagList() (tags []Tag, err error)
+```
+
+- 修改`tag`
+```go
+func (user *User) UpdateTag(tagID int, name string) (err error)
+```
+
+- 删除`tag`
+```go
+func (user *User) DeleteTag(tagID int) (err error)
+```
+
+- 获取标签下粉丝列表
+```go
+type TagUser struct {
+	Count int `json:"count"`
+	Data  struct {
+		Openid []string `json:"openid"`
+	} `json:"data"`
+	NextOpenID string `json:"next_openid"`
+}
+
+// tagid 标签ID  next_openid
+func (user *User) TagUserList(tagID int, openid string) (res TagUser, err error)
+```  
+
+
 ### 菜单
 ```go
 func (officialAccount *OfficialAccount) GetMenu() *menu.Menu
