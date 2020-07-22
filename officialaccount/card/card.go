@@ -56,84 +56,6 @@ func NewCard(context *context.Context) *Card {
 	return card
 }
 
-// Colors 卡券颜色
-type Colors struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
-}
-
-// GetColors 获取卡券颜色
-func (card *Card) GetColors() (colors []Colors, err error) {
-	var token string
-	token, err = card.GetAccessToken()
-	if err != nil {
-		return
-	}
-	uri := fmt.Sprintf("%s?access_token=%s", colorURL, token)
-
-	var response []byte
-	response, err = util.HTTPGet(uri)
-	if err != nil {
-		return
-	}
-
-	var res struct {
-		util.CommonError
-		Colors []Colors `json:"colors"`
-	}
-	err = util.DecodeWithError(response, &res, "GetColors")
-	if err != nil {
-		return
-	}
-
-	colors = res.Colors
-
-	return
-}
-
-// Category 卡券类目信息
-type Category struct {
-	PrimaryCategoryID int64  `json:"primary_category_id"`
-	CategoryName      string `json:"category_name"`
-	SecondaryCategory []struct {
-		SecondaryCategoryID     int64    `json:"secondary_category_id"`
-		CategoryName            string   `json:"category_name"`
-		NeedQualificationStuffs []string `json:"need_qualification_stuffs"`
-		CanChoosePrepaidCard    int64    `json:"can_choose_prepaid_card"`
-		CanChoosePaymentCard    int64    `json:"can_choose_payment_card"`
-	} `json:"secondary_category"`
-}
-
-// GetApplyProtocol 卡券开放类目查询接口
-func (card *Card) GetApplyProtocol() (c []Category, err error) {
-	var token string
-	token, err = card.GetAccessToken()
-	if err != nil {
-		return
-	}
-	uri := fmt.Sprintf("%s?access_token=%s", applyProtocolURL, token)
-
-	var response []byte
-	response, err = util.HTTPGet(uri)
-	if err != nil {
-		return
-	}
-
-	var res struct {
-		util.CommonError
-		Category []Category `json:"category"`
-	}
-
-	err = util.DecodeWithError(response, &res, "GetColors")
-	if err != nil {
-		return
-	}
-
-	c = res.Category
-
-	return
-}
-
 // CreateCard 创建卡券
 func (card *Card) CreateCard(t Type, attrs interface{}) (cardID string, err error) {
 	var token string
@@ -141,7 +63,7 @@ func (card *Card) CreateCard(t Type, attrs interface{}) (cardID string, err erro
 	if err != nil {
 		return
 	}
-	uri := fmt.Sprintf("%s?access_token=%s", createCardURL, token)
+	url := fmt.Sprintf(createCardURL, token)
 
 	params := map[string]interface{}{
 		"card": map[string]interface{}{
@@ -151,7 +73,7 @@ func (card *Card) CreateCard(t Type, attrs interface{}) (cardID string, err erro
 	}
 
 	var response []byte
-	response, err = util.PostJSON(uri, params)
+	response, err = util.PostJSON(url, params)
 	if err != nil {
 		return
 	}
@@ -178,7 +100,7 @@ func (card *Card) UpdateCard(cardID string, t Type, attrs interface{}) (check bo
 	if err != nil {
 		return
 	}
-	uri := fmt.Sprintf("%s?access_token=%s", updateURL, token)
+	url := fmt.Sprintf(updateURL, token)
 
 	params := map[string]interface{}{
 		"card_id":                  cardID,
@@ -186,7 +108,7 @@ func (card *Card) UpdateCard(cardID string, t Type, attrs interface{}) (check bo
 	}
 
 	var response []byte
-	response, err = util.PostJSON(uri, params)
+	response, err = util.PostJSON(url, params)
 	if err != nil {
 		return
 	}
@@ -213,10 +135,10 @@ func (card *Card) GetCard(cardID string) (res map[string]interface{}, err error)
 	if err != nil {
 		return
 	}
-	uri := fmt.Sprintf("%s?access_token=%s", getCardURL, token)
+	url := fmt.Sprintf(getCardURL, token)
 
 	var response []byte
-	response, err = util.PostJSON(uri, map[string]interface{}{
+	response, err = util.PostJSON(url, map[string]interface{}{
 		"card_id": cardID,
 	})
 	if err != nil {
@@ -258,10 +180,10 @@ func (card *Card) BatchGet(req BatchGetRequest) (res BatchCardList, err error) {
 	if err != nil {
 		return
 	}
-	uri := fmt.Sprintf("%s?access_token=%s", batchGetURL, token)
+	url := fmt.Sprintf(batchGetURL, token)
 
 	var response []byte
-	response, err = util.PostJSON(uri, req)
+	response, err = util.PostJSON(url, req)
 	if err != nil {
 		return
 	}
@@ -291,21 +213,17 @@ func (card *Card) DeleteCard(cardID string) (err error) {
 	if err != nil {
 		return
 	}
-	uri := fmt.Sprintf("%s?access_token=%s", deleteURL, token)
+	url := fmt.Sprintf(deleteURL, token)
 
 	var response []byte
-	response, err = util.PostJSON(uri, map[string]interface{}{
+	response, err = util.PostJSON(url, map[string]interface{}{
 		"card_id": cardID,
 	})
 	if err != nil {
 		return
 	}
 
-	var res struct {
-		util.CommonError
-	}
-
-	err = util.DecodeWithError(response, &res, "DeleteCard")
+	err = util.DecodeWithCommonError(response, "DeleteCard")
 	if err != nil {
 		return
 	}
@@ -328,10 +246,10 @@ func (card *Card) CreateCardQrcode(attr map[string]interface{}) (res Qrcode, err
 	if err != nil {
 		return
 	}
-	uri := fmt.Sprintf("%s?access_token=%s", createQrcodeURL, token)
+	url := fmt.Sprintf(createQrcodeURL, token)
 
 	var response []byte
-	response, err = util.PostJSON(uri, attr)
+	response, err = util.PostJSON(url, attr)
 	if err != nil {
 		return
 	}
@@ -351,6 +269,38 @@ func (card *Card) CreateCardQrcode(attr map[string]interface{}) (res Qrcode, err
 		URL:           qrcode.URL,
 		ShowQrcodeURL: qrcode.ShowQrcodeURL,
 	}
+
+	return
+}
+
+// GetHtml 图文消息群发卡券
+func (card *Card) GetHtml(cardID string) (content string, err error) {
+	var token string
+	token, err = card.GetAccessToken()
+	if err != nil {
+		return
+	}
+	url := fmt.Sprintf(getHtmlURL, token)
+
+	var response []byte
+	response, err = util.PostJSON(url, map[string]interface{}{
+		"card_id": cardID,
+	})
+	if err != nil {
+		return
+	}
+
+	var res struct {
+		util.CommonError
+		Content string `json:"content"`
+	}
+
+	err = util.DecodeWithError(response, &res, "GetHtml")
+	if err != nil {
+		return
+	}
+
+	content = res.Content
 
 	return
 }

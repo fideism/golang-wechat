@@ -1,7 +1,6 @@
 package user
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/url"
 
@@ -80,7 +79,7 @@ func (user *User) GetUserInfo(openID string) (userInfo *Info, err error) {
 		return
 	}
 	userInfo = new(Info)
-	err = json.Unmarshal(response, userInfo)
+	err = util.DecodeWithError(response, userInfo, "GetUserInfo")
 	if err != nil {
 		return
 	}
@@ -130,7 +129,7 @@ func (user *User) ListUserOpenIDs(nextOpenid ...string) (*OpenidList, error) {
 	}
 
 	userlist := new(OpenidList)
-	err = json.Unmarshal(response, userlist)
+	err = util.DecodeWithCustomerStruct(response, userlist, "ListUserOpenIDs")
 	if err != nil {
 		return nil, err
 	}
@@ -190,7 +189,7 @@ func (user *User) CreateTag(name string) (tag Tag, err error) {
 		Tag Tag `json:"tag"`
 	}
 
-	err = json.Unmarshal(response, &res)
+	err = util.DecodeWithError(response, &res, "CreateTag")
 	if err != nil {
 		return
 	}
@@ -221,7 +220,7 @@ func (user *User) TagList() (tags []Tag, err error) {
 		Tags []Tag `json:"tags"`
 	}
 
-	err = json.Unmarshal(response, &res)
+	err = util.DecodeWithError(response, &res, "TagList")
 	if err != nil {
 		return
 	}
@@ -252,9 +251,7 @@ func (user *User) UpdateTag(tagID int, name string) (err error) {
 		return
 	}
 
-	var res util.CommonError
-
-	err = json.Unmarshal(response, &res)
+	err = util.DecodeWithCommonError(response, "UpdateTag")
 	if err != nil {
 		return
 	}
@@ -282,9 +279,7 @@ func (user *User) DeleteTag(tagID int) (err error) {
 		return
 	}
 
-	var res util.CommonError
-
-	err = json.Unmarshal(response, &res)
+	err = util.DecodeWithCommonError(response, "DeleteTag")
 	if err != nil {
 		return
 	}
@@ -310,7 +305,6 @@ func (user *User) TagUserList(tagID int, openid string) (res TagUser, err error)
 	}
 
 	uri := fmt.Sprintf(tagUserListURL, accessToken)
-	fmt.Println(uri)
 	var response []byte
 	response, err = util.PostJSON(uri, map[string]interface{}{
 		"tagid":       tagID,
@@ -321,7 +315,7 @@ func (user *User) TagUserList(tagID int, openid string) (res TagUser, err error)
 		return
 	}
 
-	err = json.Unmarshal(response, &res)
+	err = util.DecodeWithCustomerStruct(response, &res, "TagUserList")
 	if err != nil {
 		return
 	}

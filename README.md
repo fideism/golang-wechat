@@ -74,5 +74,10 @@ func main() {
 
 ```
 
+### 日志
+默认记录`debug`级别日志
+
+可以通过设置系统`LOG_LEVEL`来控制日志记录
+
 ### Based On
 [silenceper/wechat](https://github.com/silenceper/wechat) 

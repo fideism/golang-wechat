@@ -1,7 +1,6 @@
 package basic
 
 import (
-	"encoding/json"
 	"fmt"
 	"reflect"
 	"time"
@@ -63,7 +62,7 @@ func (basic *Basic) GetQRTicket(tq *Request) (t *Ticket, err error) {
 	}
 
 	t = new(Ticket)
-	err = json.Unmarshal(response, &t)
+	err = util.DecodeWithError(response, t, "GetQRTicket")
 	if err != nil {
 		return
 	}

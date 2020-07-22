@@ -247,6 +247,13 @@ type Category struct {
 res, _ := officail.GetCard().GetApplyProtocol()
 ```
 
+- 设置白名单
+```go
+func (card *Card) SetWhiteListByOpenid(openids []string) (err error)
+
+func (card *Card) SetWhiteListByUsername(names []string) (err error)
+```
+
 - 创建卡券
 
 所有创建卡券信息都调用该接口就行，传入不同的`card_type` 以及对应卡券所需要的字段信息`map[string]interface{}{.....}`

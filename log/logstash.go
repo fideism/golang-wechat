@@ -9,17 +9,13 @@ import (
 // DefaultTimestampFormat 默认日期解析格式
 const DefaultTimestampFormat = `2006-01-02 15:04:05`
 
-// LogstashFormatter 日志格式化
-type LogstashFormatter struct {
-	Channel string
-}
-
-// LogstashFormatterOption 日志格式化参数
-type LogstashFormatterOption func(*LogstashFormatter)
+// WechatFormatter 日志格式化
+type WechatFormatter struct{}
 
 // Format 格式化
-func (f *LogstashFormatter) Format(entry *logrus.Entry) ([]byte, error) {
+func (f *WechatFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 	entry.Data["datetime"] = entry.Time.Format(DefaultTimestampFormat)
+	entry.Data["channel"] = "golang-wechat"
 
 	// set message field
 	v, ok := entry.Data["message"]
@@ -34,7 +30,6 @@ func (f *LogstashFormatter) Format(entry *logrus.Entry) ([]byte, error) {
 		entry.Data["fields.level"] = v
 	}
 	entry.Data["level"] = entry.Level.String()
-	entry.Data["channel"] = f.Channel
 
 	serialized, err := json.Marshal(entry.Data)
 	if err != nil {

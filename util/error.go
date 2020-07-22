@@ -3,6 +3,8 @@ package util
 import (
 	"encoding/json"
 	"fmt"
+	logger "github.com/fideism/golang-wechat/log"
+	"github.com/sirupsen/logrus"
 	"reflect"
 )
 
@@ -15,6 +17,10 @@ type CommonError struct {
 // DecodeWithCommonError 将返回值按照CommonError解析
 func DecodeWithCommonError(response []byte, apiName string) (err error) {
 	var commError CommonError
+	logger.Entry().WithFields(logrus.Fields{
+		"api_name": apiName,
+		"data":     commError,
+	}).Debug("解析微信返回信息")
 	err = json.Unmarshal(response, &commError)
 	if err != nil {
 		return
@@ -25,9 +31,31 @@ func DecodeWithCommonError(response []byte, apiName string) (err error) {
 	return nil
 }
 
+// DecodeWithCustomerStruct 将返回值按照CommonError解析
+func DecodeWithCustomerStruct(response []byte, obj interface{}, apiName string) error {
+	err := json.Unmarshal(response, obj)
+	logger.Entry().WithFields(logrus.Fields{
+		"api_name": apiName,
+		"data":     obj,
+	}).Debug("解析微信返回信息")
+	if err != nil {
+		return fmt.Errorf("%s json Unmarshal Error, err=%v", apiName, err)
+	}
+	responseObj := reflect.ValueOf(obj)
+	if !responseObj.IsValid() {
+		return fmt.Errorf("%s obj is invalid", apiName)
+	}
+
+	return nil
+}
+
 // DecodeWithError 将返回值按照解析
 func DecodeWithError(response []byte, obj interface{}, apiName string) error {
 	err := json.Unmarshal(response, obj)
+	logger.Entry().WithFields(logrus.Fields{
+		"api_name": apiName,
+		"data":     obj,
+	}).Debug("解析微信返回信息")
 	if err != nil {
 		return fmt.Errorf("json Unmarshal Error, err=%v", err)
 	}

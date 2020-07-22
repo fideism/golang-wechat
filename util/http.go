@@ -7,6 +7,8 @@ import (
 	"encoding/pem"
 	"encoding/xml"
 	"fmt"
+	logger "github.com/fideism/golang-wechat/log"
+	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	"log"
@@ -19,6 +21,10 @@ import (
 
 //HTTPGet get 请求
 func HTTPGet(uri string) ([]byte, error) {
+	logger.Entry().WithFields(logrus.Fields{
+		"url": uri,
+	}).Debug("发起微信get请求")
+
 	response, err := http.Get(uri)
 	if err != nil {
 		return nil, err
@@ -33,6 +39,11 @@ func HTTPGet(uri string) ([]byte, error) {
 
 //HTTPPost post 请求
 func HTTPPost(uri string, data string) ([]byte, error) {
+	logger.Entry().WithFields(logrus.Fields{
+		"url":  uri,
+		"data": data,
+	}).Debug("发起微信post请求")
+
 	body := bytes.NewBuffer([]byte(data))
 	response, err := http.Post(uri, "", body)
 	if err != nil {
@@ -48,6 +59,11 @@ func HTTPPost(uri string, data string) ([]byte, error) {
 
 //PostJSON post json 数据请求
 func PostJSON(uri string, obj interface{}) ([]byte, error) {
+	logger.Entry().WithFields(logrus.Fields{
+		"url":  uri,
+		"data": obj,
+	}).Debug("发起微信post-json请求")
+
 	jsonData, err := json.Marshal(obj)
 	if err != nil {
 		return nil, err
@@ -70,6 +86,10 @@ func PostJSON(uri string, obj interface{}) ([]byte, error) {
 
 // PostJSONWithRespContentType post json数据请求，且返回数据类型
 func PostJSONWithRespContentType(uri string, obj interface{}) ([]byte, string, error) {
+	logger.Entry().WithFields(logrus.Fields{
+		"url":  uri,
+		"data": obj,
+	}).Debug("发起微信post-json-with请求")
 	jsonData, err := json.Marshal(obj)
 	if err != nil {
 		return nil, "", err
@@ -168,6 +188,10 @@ func PostMultipartForm(fields []MultipartFormField, uri string) (respBody []byte
 
 //PostXML perform a HTTP/POST request with XML body
 func PostXML(uri string, obj interface{}) ([]byte, error) {
+	logger.Entry().WithFields(logrus.Fields{
+		"url":  uri,
+		"data": obj,
+	}).Debug("发起微信post-xml请求")
 	xmlData, err := xml.Marshal(obj)
 	if err != nil {
 		return nil, err
