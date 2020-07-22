@@ -13,12 +13,12 @@
 - [oauth2网页授权](#oauth2网页授权)
 - [素材管理](#素材管理)
 - [卡券](#卡券)
-- [js-sdk配置](#js-sdk配置)
+- [消息](#消息)
 - [群发消息](#群发消息)
 - [模板消息接口](#模板消息接口)
+- [js-sdk配置](#js-sdk配置)
 - [获取智能设备的实例](#获取智能设备的实例)
 - [数据统计](#数据统计)
-
 
 ## 快速入门
 
@@ -394,6 +394,85 @@ type Qrcode struct {
 
 // map[string]interface{} 详细字段信息
 func (card *Card) CreateCardQrcode(attr map[string]interface{}) (res Qrcode, err error)
+```
+
+### 消息
+
+客服接口，发送单个用户消息
+
+```go
+func (o *OfficialAccount) GetMessage() *message.Manager
+
+//获取实例
+message := officail.GetMessage()
+
+// 消息格式
+// 快捷构造消息类型实例
+func CustomerTextMessage(toUser, text string) *CustomerMessage
+func CustomerImgMessage(toUser, mediaID string) *CustomerMessage
+func CustomerVoiceMessage(toUser, mediaID string) *CustomerMessage
+func CustomerWxCardMessage(toUser, cardID string) *CustomerMessage
+
+// 其他类型消息
+message.CustomerMessage
+```
+
+- 文本消息
+```go
+text := message.NewCustomerTextMessage("openid", "hello")
+err := officail.GetMessage().Send(text)
+
+err = officail.GetMessage().Send(&message.CustomerMessage{
+		ToUser:  openid,
+		Msgtype: message.MsgTypeText,
+		Text: &message.MediaText{
+			Content: "word",
+		},
+	})
+```
+
+其他类型消息
+```go
+//CustomerMessage  客服消息
+type CustomerMessage struct {
+	ToUser          string                `json:"touser"`                    //接受者OpenID
+	Msgtype         MsgType               `json:"msgtype"`                   //客服消息类型
+	Text            *MediaText            `json:"text,omitempty"`            //可选
+	Image           *MediaResource        `json:"image,omitempty"`           //可选
+	Voice           *MediaResource        `json:"voice,omitempty"`           //可选
+	Video           *MediaVideo           `json:"video,omitempty"`           //可选
+	Music           *MediaMusic           `json:"music,omitempty"`           //可选
+	News            *MediaNews            `json:"news,omitempty"`            //可选
+	Mpnews          *MediaResource        `json:"mpnews,omitempty"`          //可选
+	Wxcard          *MediaWxcard          `json:"wxcard,omitempty"`          //可选
+	Msgmenu         *MediaMsgmenu         `json:"msgmenu,omitempty"`         //可选
+	Miniprogrampage *MediaMiniprogrampage `json:"miniprogrampage,omitempty"` //可选
+}
+
+//MsgTypeText 表示文本消息
+MsgTypeText MsgType = "text"
+//MsgTypeImage 表示图片消息
+MsgTypeImage = "image"
+//MsgTypeVoice 表示语音消息
+MsgTypeVoice = "voice"
+//MsgTypeVideo 表示视频消息
+MsgTypeVideo = "video"
+//MsgTypeShortVideo 表示短视频消息[限接收]
+MsgTypeShortVideo = "shortvideo"
+//MsgTypeLocation 表示坐标消息[限接收]
+MsgTypeLocation = "location"
+//MsgTypeLink 表示链接消息[限接收]
+MsgTypeLink = "link"
+//MsgTypeMusic 表示音乐消息[限回复]
+MsgTypeMusic = "music"
+//MsgTypeNews 表示图文消息[限回复]
+MsgTypeNews = "news"
+//MsgTypeTransfer 表示消息消息转发到客服
+MsgTypeTransfer = "transfer_customer_service"
+//MsgTypeEvent 表示事件推送消息
+MsgTypeEvent = "event"
+//MsgTypeWxcard 卡券消息
+MsgTypeWxcard = "wxcard"
 ```
 
 ### js-sdk配置

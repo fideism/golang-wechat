@@ -1,7 +1,6 @@
 package message
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/fideism/golang-wechat/officialaccount/context"
@@ -40,8 +39,8 @@ type CustomerMessage struct {
 	Miniprogrampage *MediaMiniprogrampage `json:"miniprogrampage,omitempty"` //可选
 }
 
-//NewCustomerTextMessage 文本消息结构体构造方法
-func NewCustomerTextMessage(toUser, text string) *CustomerMessage {
+//CustomerTextMessage 文本消息结构体构造方法
+func CustomerTextMessage(toUser, text string) *CustomerMessage {
 	return &CustomerMessage{
 		ToUser:  toUser,
 		Msgtype: MsgTypeText,
@@ -51,8 +50,8 @@ func NewCustomerTextMessage(toUser, text string) *CustomerMessage {
 	}
 }
 
-//NewCustomerImgMessage 图片消息的构造方法
-func NewCustomerImgMessage(toUser, mediaID string) *CustomerMessage {
+//CustomerImgMessage 图片消息的构造方法
+func CustomerImgMessage(toUser, mediaID string) *CustomerMessage {
 	return &CustomerMessage{
 		ToUser:  toUser,
 		Msgtype: MsgTypeImage,
@@ -62,13 +61,24 @@ func NewCustomerImgMessage(toUser, mediaID string) *CustomerMessage {
 	}
 }
 
-//NewCustomerVoiceMessage 语音消息的构造方法
-func NewCustomerVoiceMessage(toUser, mediaID string) *CustomerMessage {
+//CustomerVoiceMessage 语音消息的构造方法
+func CustomerVoiceMessage(toUser, mediaID string) *CustomerMessage {
 	return &CustomerMessage{
 		ToUser:  toUser,
 		Msgtype: MsgTypeVoice,
 		Voice: &MediaResource{
 			mediaID,
+		},
+	}
+}
+
+// CustomerWxCardMessage 构造卡券消息
+func CustomerWxCardMessage(toUser, cardID string) *CustomerMessage {
+	return &CustomerMessage{
+		ToUser:  toUser,
+		Msgtype: MsgTypeWxcard,
+		Wxcard: &MediaWxcard{
+			CardID: cardID,
 		},
 	}
 }
@@ -140,7 +150,7 @@ type MediaMiniprogrampage struct {
 }
 
 //Send 发送客服消息
-func (manager *Manager) Send(msg *CustomerMessage) error {
+func (manager *Manager) Send(msg *CustomerMessage) (err error) {
 	accessToken, err := manager.Context.GetAccessToken()
 	if err != nil {
 		return err
@@ -150,15 +160,8 @@ func (manager *Manager) Send(msg *CustomerMessage) error {
 	if err != nil {
 		return err
 	}
-	var result util.CommonError
-	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return err
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("customer msg send error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return err
-	}
+
+	err = util.DecodeWithCommonError(response, "MessageSend")
 
 	return nil
 }

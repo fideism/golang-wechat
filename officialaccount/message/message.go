@@ -38,6 +38,8 @@ const (
 	MsgTypeTransfer = "transfer_customer_service"
 	//MsgTypeEvent 表示事件推送消息
 	MsgTypeEvent = "event"
+	//MsgTypeWxcard 卡券消息
+	MsgTypeWxcard = "wxcard"
 )
 
 const (

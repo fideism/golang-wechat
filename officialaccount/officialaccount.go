@@ -1,16 +1,15 @@
 package officialaccount
 
 import (
-	"github.com/fideism/golang-wechat/officialaccount/card"
 	"net/http"
-
-	"github.com/fideism/golang-wechat/officialaccount/datacube"
 
 	"github.com/fideism/golang-wechat/credential"
 	"github.com/fideism/golang-wechat/officialaccount/basic"
 	"github.com/fideism/golang-wechat/officialaccount/broadcast"
+	"github.com/fideism/golang-wechat/officialaccount/card"
 	"github.com/fideism/golang-wechat/officialaccount/config"
 	"github.com/fideism/golang-wechat/officialaccount/context"
+	"github.com/fideism/golang-wechat/officialaccount/datacube"
 	"github.com/fideism/golang-wechat/officialaccount/device"
 	"github.com/fideism/golang-wechat/officialaccount/js"
 	"github.com/fideism/golang-wechat/officialaccount/material"
@@ -37,51 +36,51 @@ func NewOfficialAccount(cfg *config.Config) *OfficialAccount {
 }
 
 //SetAccessTokenHandle 自定义access_token获取方式
-func (officialAccount *OfficialAccount) SetAccessTokenHandle(accessTokenHandle credential.AccessTokenHandle) {
-	officialAccount.ctx.AccessTokenHandle = accessTokenHandle
+func (o *OfficialAccount) SetAccessTokenHandle(accessTokenHandle credential.AccessTokenHandle) {
+	o.ctx.AccessTokenHandle = accessTokenHandle
 }
 
 // GetContext get Context
-func (officialAccount *OfficialAccount) GetContext() *context.Context {
-	return officialAccount.ctx
+func (o *OfficialAccount) GetContext() *context.Context {
+	return o.ctx
 }
 
 // GetBasic qr/url 相关配置
-func (officialAccount *OfficialAccount) GetBasic() *basic.Basic {
-	return basic.NewBasic(officialAccount.ctx)
+func (o *OfficialAccount) GetBasic() *basic.Basic {
+	return basic.NewBasic(o.ctx)
 }
 
 // GetMenu 菜单管理接口
-func (officialAccount *OfficialAccount) GetMenu() *menu.Menu {
-	return menu.NewMenu(officialAccount.ctx)
+func (o *OfficialAccount) GetMenu() *menu.Menu {
+	return menu.NewMenu(o.ctx)
 }
 
 // GetServer 消息管理：接收事件，被动回复消息管理
-func (officialAccount *OfficialAccount) GetServer(req *http.Request, writer http.ResponseWriter) *server.Server {
-	srv := server.NewServer(officialAccount.ctx)
+func (o *OfficialAccount) GetServer(req *http.Request, writer http.ResponseWriter) *server.Server {
+	srv := server.NewServer(o.ctx)
 	srv.Request = req
 	srv.Writer = writer
 	return srv
 }
 
 //GetAccessToken 获取access_token
-func (officialAccount *OfficialAccount) GetAccessToken() (string, error) {
-	return officialAccount.ctx.GetAccessToken()
+func (o *OfficialAccount) GetAccessToken() (string, error) {
+	return o.ctx.GetAccessToken()
 }
 
 // GetOauth oauth2网页授权
-func (officialAccount *OfficialAccount) GetOauth() *oauth.Oauth {
-	return oauth.NewOauth(officialAccount.ctx)
+func (o *OfficialAccount) GetOauth() *oauth.Oauth {
+	return oauth.NewOauth(o.ctx)
 }
 
 // GetMaterial 素材管理
-func (officialAccount *OfficialAccount) GetMaterial() *material.Material {
-	return material.NewMaterial(officialAccount.ctx)
+func (o *OfficialAccount) GetMaterial() *material.Material {
+	return material.NewMaterial(o.ctx)
 }
 
 // GetJs js-sdk配置
-func (officialAccount *OfficialAccount) GetJs() *js.Js {
-	return js.NewJs(officialAccount.ctx)
+func (o *OfficialAccount) GetJs() *js.Js {
+	return js.NewJs(o.ctx)
 }
 
 // GetUser 用户管理接口
@@ -90,27 +89,32 @@ func (officialAccount *OfficialAccount) GetUser() *user.User {
 }
 
 // GetTemplate 模板消息接口
-func (officialAccount *OfficialAccount) GetTemplate() *message.Template {
-	return message.NewTemplate(officialAccount.ctx)
+func (o *OfficialAccount) GetTemplate() *message.Template {
+	return message.NewTemplate(o.ctx)
 }
 
 // GetDevice 获取智能设备的实例
-func (officialAccount *OfficialAccount) GetDevice() *device.Device {
-	return device.NewDevice(officialAccount.ctx)
+func (o *OfficialAccount) GetDevice() *device.Device {
+	return device.NewDevice(o.ctx)
 }
 
 //GetBroadcast 群发消息
 //TODO 待完善
-func (officialAccount *OfficialAccount) GetBroadcast() *broadcast.Broadcast {
-	return broadcast.NewBroadcast(officialAccount.ctx)
+func (o *OfficialAccount) GetBroadcast() *broadcast.Broadcast {
+	return broadcast.NewBroadcast(o.ctx)
 }
 
 //GetDataCube 数据统计
-func (officialAccount *OfficialAccount) GetDataCube() *datacube.DataCube {
-	return datacube.NewCube(officialAccount.ctx)
+func (o *OfficialAccount) GetDataCube() *datacube.DataCube {
+	return datacube.NewCube(o.ctx)
 }
 
 // GetCard 卡券
-func (officialAccount *OfficialAccount) GetCard() *card.Card {
-	return card.NewCard(officialAccount.ctx)
+func (o *OfficialAccount) GetCard() *card.Card {
+	return card.NewCard(o.ctx)
+}
+
+// GetMessage 消息管理
+func (o *OfficialAccount) GetMessage() *message.Manager {
+	return message.NewMessageManager(o.ctx)
 }
