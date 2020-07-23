@@ -1,0 +1,126 @@
+package base
+
+import (
+	"bytes"
+	"crypto/tls"
+	"encoding/xml"
+	"errors"
+	"fmt"
+	logger "github.com/fideism/golang-wechat/log"
+	"github.com/sirupsen/logrus"
+	"io/ioutil"
+	"net/http"
+	"strings"
+)
+
+// Response 返回结构
+type Response struct {
+	ReturnCode string `json:"return_code"`
+	ReturnMsg  string `json:"return_msg"`
+	Data       Params `json:"data"`
+}
+
+const contentType = "application/xml; charset=utf-8"
+
+// PostWithoutCert https no cert post
+func PostWithoutCert(url string, params Params) (string, error) {
+	logger.Entry().WithFields(logrus.Fields{
+		"url":    url,
+		"params": params,
+	}).Debug("发起微信请求 without cert")
+	h := &http.Client{}
+	response, err := h.Post(url, contentType, strings.NewReader(MapToXML(params)))
+	if err != nil {
+		return "", err
+	}
+	defer response.Body.Close()
+	res, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(res), nil
+}
+
+// PostWithTSL https need cert post
+func PostWithTSL(url string, params Params, config *tls.Config) (string, error) {
+	transport := &http.Transport{
+		TLSClientConfig:    config,
+		DisableCompression: true,
+	}
+	h := &http.Client{Transport: transport}
+	response, err := h.Post(url, contentType, strings.NewReader(MapToXML(params)))
+	if err != nil {
+		return "", err
+	}
+	defer response.Body.Close()
+	res, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(res), nil
+}
+
+//ProcessResponseXML 处理 HTTPS API返回数据，转换成Map对象
+func ProcessResponseXML(xmlStr string) (*Response, error) {
+	params := XMLToMap(xmlStr)
+
+	var response Response
+
+	if params.Exists("return_code") {
+		response.ReturnCode = params.GetString("return_code")
+	} else {
+		return nil, errors.New("no return_code in XML")
+	}
+
+	response.ReturnMsg = params.GetString("return_msg")
+	response.Data = params
+
+	return &response, nil
+}
+
+// XMLToMap xml to map
+func XMLToMap(xmlStr string) Params {
+	params := make(Params)
+	decoder := xml.NewDecoder(strings.NewReader(xmlStr))
+
+	var (
+		key   string
+		value string
+	)
+
+	for t, err := decoder.Token(); err == nil; t, err = decoder.Token() {
+		switch token := t.(type) {
+		case xml.StartElement: // 开始标签
+			key = token.Name.Local
+		case xml.CharData: // 标签内容
+			content := string([]byte(token))
+			value = content
+		}
+		if key != "xml" {
+			if value != "\n" {
+				params.Set(key, value)
+			}
+		}
+	}
+
+	return params
+}
+
+// MapToXML map to xml
+func MapToXML(params Params) string {
+	var buf bytes.Buffer
+	buf.WriteString(`<xml>`)
+	for k, v := range params {
+		buf.WriteString(`<`)
+		buf.WriteString(k)
+		buf.WriteString(`><![CDATA[`)
+		buf.WriteString(InterfaceToString(v))
+		buf.WriteString(`]]></`)
+		buf.WriteString(k)
+		buf.WriteString(`>`)
+	}
+	buf.WriteString(`</xml>`)
+
+	fmt.Println(buf.String())
+	return buf.String()
+}

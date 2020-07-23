@@ -26,9 +26,6 @@ func (card *Card) SetActivateUserForm(cardID string, attrs map[string]interface{
 	}
 
 	err = util.DecodeWithError(response, &res, "SetActivateUserForm")
-	if err != nil {
-		return
-	}
 
 	return
 }

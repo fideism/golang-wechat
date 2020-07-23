@@ -224,9 +224,6 @@ func (card *Card) DeleteCard(cardID string) (err error) {
 	}
 
 	err = util.DecodeWithCommonError(response, "DeleteCard")
-	if err != nil {
-		return
-	}
 
 	return
 }

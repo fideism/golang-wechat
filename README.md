@@ -10,6 +10,8 @@
 - [基础信息(access_token，js_ticket)](./credential)
 - [公众号](./officialaccount)
 - [小程序](./miniprogram)
+- [开放平台](./openplatform)
+- [支付](./pay)
 
 ## 快速入门
 

@@ -192,7 +192,9 @@ func PostXML(uri string, obj interface{}) ([]byte, error) {
 		"url":  uri,
 		"data": obj,
 	}).Debug("发起微信post-xml请求")
+
 	xmlData, err := xml.Marshal(obj)
+
 	if err != nil {
 		return nil, err
 	}
