@@ -9,7 +9,7 @@ import (
 	"github.com/fideism/golang-wechat/openplatform"
 	openConfig "github.com/fideism/golang-wechat/openplatform/config"
 	"github.com/fideism/golang-wechat/pay"
-	payConfig "github.com/fideism/golang-wechat/pay/config"
+	"github.com/fideism/golang-wechat/pay/config"
 )
 
 // Wechat struct
@@ -44,7 +44,7 @@ func (w *Wechat) GetMiniProgram(c *miniConfig.Config) *miniprogram.MiniProgram {
 }
 
 // GetPay 获取微信支付的实例
-func (w *Wechat) GetPay(c *payConfig.Config) *pay.Pay {
+func (w *Wechat) GetPay(c *config.Config) *pay.Pay {
 	return pay.NewPay(c)
 }
 
