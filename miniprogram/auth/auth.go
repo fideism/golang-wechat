@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/fideism/golang-wechat/miniprogram/context"
@@ -39,14 +38,8 @@ func (auth *Auth) Code2Session(jsCode string) (result ResCode2Session, err error
 	if err != nil {
 		return
 	}
-	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("Code2Session error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return
-	}
+
+	err = util.DecodeWithError(response, &result, "Code2Session")
 	return
 }
 

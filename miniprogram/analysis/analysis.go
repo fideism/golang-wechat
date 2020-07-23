@@ -1,7 +1,6 @@
 package analysis
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/fideism/golang-wechat/miniprogram/context"
@@ -78,14 +77,8 @@ func (analysis *Analysis) getAnalysisRetain(urlStr string, beginDate, endDate st
 	if err != nil {
 		return
 	}
-	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("getAnalysisRetain error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return
-	}
+
+	err = util.DecodeWithError(response, &result, "getAnalysisRetain")
 	return
 }
 
@@ -126,14 +119,7 @@ func (analysis *Analysis) GetAnalysisDailySummary(beginDate, endDate string) (re
 		return
 	}
 
-	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("GetAnalysisDailySummary error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return
-	}
+	err = util.DecodeWithError(response, &result, "GetAnalysisDailySummary")
 	return
 }
 
@@ -162,14 +148,8 @@ func (analysis *Analysis) getAnalysisVisitTrend(urlStr string, beginDate, endDat
 	if err != nil {
 		return
 	}
-	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("getAnalysisVisitTrend error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return
-	}
+
+	err = util.DecodeWithError(response, &result, "getAnalysisVisitTrend")
 	return
 }
 
@@ -224,14 +204,8 @@ func (analysis *Analysis) GetAnalysisUserPortrait(beginDate, endDate string) (re
 	if err != nil {
 		return
 	}
-	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("GetAnalysisUserPortrait error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return
-	}
+
+	err = util.DecodeWithError(response, &result, "GetAnalysisUserPortrait")
 	return
 }
 
@@ -265,14 +239,8 @@ func (analysis *Analysis) GetAnalysisVisitDistribution(beginDate, endDate string
 	if err != nil {
 		return
 	}
-	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("GetAnalysisVisitDistribution error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return
-	}
+
+	err = util.DecodeWithError(response, &result, "GetAnalysisVisitDistribution")
 	return
 }
 
@@ -305,13 +273,7 @@ func (analysis *Analysis) GetAnalysisVisitPage(beginDate, endDate string) (resul
 	if err != nil {
 		return
 	}
-	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("GetAnalysisVisitPage error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return
-	}
+
+	err = util.DecodeWithError(response, &result, "GetAnalysisVisitPage")
 	return
 }
