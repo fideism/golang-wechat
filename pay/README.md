@@ -8,7 +8,7 @@
 
 支付内部调用参数传递类型`Params  map[string]interface{}` 
 ```go
-import "github.com/fideism/golang-wechat/pay/base"
+import "github.com/fideism/golang-wechat/util"
 
 // Params map[string]interface{}
 type Params map[string]interface{}
@@ -68,7 +68,7 @@ payment := pay.NewPay(&config.Config{
 `sign_type` 外部不传入，默认`MD5`
 
 ```go
-p := base.Params{
+p := util.Params{
 		"out_trade_no": "202007230001",
 		"total_fee":    1,
 		"body":         "测试支付统一下单",
@@ -94,7 +94,7 @@ func (order *Order) MicroPay(params base.Params) (*base.Response, error)
 
 ### 查询订单
 ```go
-params := base.Params{
+params := util.Params{
     "transaction_id": "4200000235201812131594207984",
 }
 
@@ -110,7 +110,7 @@ payment.GetOrder().Query()
 ```go
 github.com/fideism/golang-wechat/pay/config
 
-p := base.Params{
+p := util.Params{
     "sub_mch_id":     "1512175241",
     "transaction_id": "4200000235201812131594207984",
     "out_refund_no":  "202007230001111",
@@ -130,7 +130,7 @@ payment.GetRefund().Refund()
 
 ### 查询退款
 ```go
-p := base.Params{
+p := util.Params{
     "sub_mch_id": "1512175241",
     "refund_id":  "50000701192019070910499634214",
 }

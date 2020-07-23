@@ -8,7 +8,6 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"hash"
 	"strings"
@@ -208,22 +207,4 @@ func CalculateSign(content, signType, key string) (string, error) {
 		return ``, err
 	}
 	return strings.ToUpper(hex.EncodeToString(h.Sum(nil))), nil
-}
-
-// ParamSign 计算所传参数的签名
-func ParamSign(p map[string]string, key string) (string, error) {
-	bizKey := "&key=" + key
-	str := OrderParam(p, bizKey)
-
-	var signType string
-	switch p["sign_type"] {
-	case SignTypeMD5, SignTypeHMACSHA256:
-		signType = p["sign_type"]
-	case ``:
-		signType = SignTypeMD5
-	default:
-		return ``, errors.New(`invalid sign_type`)
-	}
-
-	return CalculateSign(str, signType, key)
 }
