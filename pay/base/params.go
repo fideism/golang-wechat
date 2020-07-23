@@ -6,47 +6,17 @@ import (
 	"crypto/md5"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"github.com/fideism/golang-wechat/pay/config"
 	"github.com/fideism/golang-wechat/util"
 	"sort"
-	"strconv"
 	"strings"
 )
 
 // Params map[string]interface{}
-type Params map[string]interface{}
-
-// Set 设置值
-func (p Params) Set(k string, v interface{}) Params {
-	p[k] = v
-
-	return p
-}
-
-// Get 获取值
-func (p Params) Get(k string) (v interface{}) {
-	v, _ = p[k]
-
-	return
-}
-
-// GetString 强制获取k对应的v string类型
-func (p Params) GetString(k string) string {
-	v, _ := p[k]
-
-	return InterfaceToString(v)
-}
-
-// Exists 判断是否存在
-func (p Params) Exists(k string) bool {
-	_, ok := p[k]
-
-	return ok
-}
+type Params util.Params
 
 // AppendConfig 增加 基础config参数
-func (p Params) AppendConfig(config *config.Config) Params {
+func AppendConfig(p util.Params, config *config.Config) util.Params {
 	p.Set("appid", config.AppID).
 		Set("mch_id", config.MchID)
 
@@ -54,8 +24,8 @@ func (p Params) AppendConfig(config *config.Config) Params {
 }
 
 // Sign 生成签名
-func (p Params) Sign(config *config.Config) Params {
-	p.AppendConfig(config)
+func Sign(p util.Params, config *config.Config) util.Params {
+	p = AppendConfig(p, config)
 	p.Set("nonce_str", util.RandomStr(32))
 
 	if !p.Exists("sign_type") {
@@ -92,7 +62,7 @@ func (p Params) Sign(config *config.Config) Params {
 	return p
 }
 
-func makeSign(params Params, buffer bytes.Buffer) string {
+func makeSign(params util.Params, buffer bytes.Buffer) string {
 	var sign string
 
 	if params.GetString("sign_type") == "MD5" {
@@ -109,60 +79,4 @@ func makeSign(params Params, buffer bytes.Buffer) string {
 	}
 
 	return strings.ToUpper(sign)
-}
-
-// InterfaceToString 不定类型强制装换为string
-func InterfaceToString(value interface{}) string {
-	var key string
-	if value == nil {
-		return key
-	}
-
-	switch value.(type) {
-	case float64:
-		ft := value.(float64)
-		key = strconv.FormatFloat(ft, 'f', -1, 64)
-	case float32:
-		ft := value.(float32)
-		key = strconv.FormatFloat(float64(ft), 'f', -1, 64)
-	case int:
-		it := value.(int)
-		key = strconv.Itoa(it)
-	case uint:
-		it := value.(uint)
-		key = strconv.Itoa(int(it))
-	case int8:
-		it := value.(int8)
-		key = strconv.Itoa(int(it))
-	case uint8:
-		it := value.(uint8)
-		key = strconv.Itoa(int(it))
-	case int16:
-		it := value.(int16)
-		key = strconv.Itoa(int(it))
-	case uint16:
-		it := value.(uint16)
-		key = strconv.Itoa(int(it))
-	case int32:
-		it := value.(int32)
-		key = strconv.Itoa(int(it))
-	case uint32:
-		it := value.(uint32)
-		key = strconv.Itoa(int(it))
-	case int64:
-		it := value.(int64)
-		key = strconv.FormatInt(it, 10)
-	case uint64:
-		it := value.(uint64)
-		key = strconv.FormatUint(it, 10)
-	case string:
-		key = value.(string)
-	case []byte:
-		key = string(value.([]byte))
-	default:
-		newValue, _ := json.Marshal(value)
-		key = string(newValue)
-	}
-
-	return key
 }

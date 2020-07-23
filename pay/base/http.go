@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	logger "github.com/fideism/golang-wechat/log"
+	"github.com/fideism/golang-wechat/util"
 	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
@@ -15,15 +16,15 @@ import (
 
 // Response 返回结构
 type Response struct {
-	ReturnCode string `json:"return_code"`
-	ReturnMsg  string `json:"return_msg"`
-	Data       Params `json:"data"`
+	ReturnCode string      `json:"return_code"`
+	ReturnMsg  string      `json:"return_msg"`
+	Data       util.Params `json:"data"`
 }
 
 const contentType = "application/xml; charset=utf-8"
 
 // PostWithoutCert https no cert post
-func PostWithoutCert(url string, params Params) (string, error) {
+func PostWithoutCert(url string, params util.Params) (string, error) {
 	logger.Entry().WithFields(logrus.Fields{
 		"url":    url,
 		"params": params,
@@ -42,7 +43,7 @@ func PostWithoutCert(url string, params Params) (string, error) {
 }
 
 // PostWithTSL https need cert post
-func PostWithTSL(url string, params Params, config *tls.Config) (string, error) {
+func PostWithTSL(url string, params util.Params, config *tls.Config) (string, error) {
 	transport := &http.Transport{
 		TLSClientConfig:    config,
 		DisableCompression: true,
@@ -79,8 +80,8 @@ func ProcessResponseXML(xmlStr string) (*Response, error) {
 }
 
 // XMLToMap xml to map
-func XMLToMap(xmlStr string) Params {
-	params := make(Params)
+func XMLToMap(xmlStr string) util.Params {
+	params := make(util.Params)
 	decoder := xml.NewDecoder(strings.NewReader(xmlStr))
 
 	var (
@@ -107,14 +108,14 @@ func XMLToMap(xmlStr string) Params {
 }
 
 // MapToXML map to xml
-func MapToXML(params Params) string {
+func MapToXML(params util.Params) string {
 	var buf bytes.Buffer
 	buf.WriteString(`<xml>`)
 	for k, v := range params {
 		buf.WriteString(`<`)
 		buf.WriteString(k)
 		buf.WriteString(`><![CDATA[`)
-		buf.WriteString(InterfaceToString(v))
+		buf.WriteString(util.InterfaceToString(v))
 		buf.WriteString(`]]></`)
 		buf.WriteString(k)
 		buf.WriteString(`>`)
