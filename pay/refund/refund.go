@@ -3,6 +3,7 @@ package refund
 import (
 	"github.com/fideism/golang-wechat/pay/base"
 	"github.com/fideism/golang-wechat/pay/config"
+	"github.com/fideism/golang-wechat/util"
 )
 
 // Refund struct extends context
@@ -16,8 +17,8 @@ func NewRefund(cfg *config.Config) *Refund {
 }
 
 // Refund 退款
-func (refund *Refund) Refund(params base.Params, cert config.Cert) (*base.Response, error) {
-	params.Sign(refund.Config)
+func (refund *Refund) Refund(params util.Params, cert config.Cert) (*base.Response, error) {
+	params = base.Sign(params, refund.Config)
 
 	tsl, err := base.CertTLSConfig(refund.Config.MchID, cert.Path)
 	if err != nil {
@@ -33,8 +34,8 @@ func (refund *Refund) Refund(params base.Params, cert config.Cert) (*base.Respon
 }
 
 // Query 查询退款
-func (refund *Refund) Query(params base.Params) (*base.Response, error) {
-	params.Sign(refund.Config)
+func (refund *Refund) Query(params util.Params) (*base.Response, error) {
+	params = base.Sign(params, refund.Config)
 
 	xmlStr, err := base.PostWithoutCert(base.GetRefundQueryURL(refund.Config), params)
 	if err != nil {
