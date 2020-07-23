@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	code2SessionURL = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code"
+	code2SessionURL   = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code"
+	getPaidUnionIDURL = "https://api.weixin.qq.com/wxa/getpaidunionid?access_token=%s&openid=%s"
 )
 
 //Auth 登录/用户信息
@@ -43,7 +44,37 @@ func (auth *Auth) Code2Session(jsCode string) (result ResCode2Session, err error
 	return
 }
 
+// ResGetPaidUnionID 支付后获取用户unionid的返回结果
+type ResGetPaidUnionID struct {
+	util.CommonError
+
+	UnionID string `json:"unionid"` // 用户在开放平台的唯一标识符，在满足UnionID下发条件的情况下会返回
+}
+
 //GetPaidUnionID 用户支付完成后，获取该用户的 UnionId，无需用户授权
-func (auth *Auth) GetPaidUnionID() {
-	//TODO
+func (auth *Auth) GetPaidUnionID(p util.Params) (result ResGetPaidUnionID, err error) {
+	urlStr := paidUnionIDURL(p)
+
+	var response []byte
+	response, err = util.HTTPGet(urlStr)
+	if err != nil {
+		return
+	}
+
+	err = util.DecodeWithError(response, &result, "Code2Session")
+	return
+}
+
+func paidUnionIDURL(p util.Params) string {
+	urlStr := fmt.Sprintf(getPaidUnionIDURL, auth.Context.GetAccessToken(), p.GetString(`openid`))
+	if p.Exists(`transaction_id`) {
+		urlStr += `&transaction_id=` + p.GetString(`transaction_id`)
+	}
+
+	if p.Exists(`out_trade_no`) && p.Exists(`mch_id`) {
+		urlStr += `&out_trade_no=` + p.GetString(`out_trade_no`) +
+			`&mch_id=` + p.GetString(`mch_id`)
+	}
+
+	return urlStr
 }
