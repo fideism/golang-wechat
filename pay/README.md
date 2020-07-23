@@ -26,7 +26,7 @@ func (p Params) GetString(k string) string
 func (p Params) Exists(k string) bool
 
 //具体使用
-p := base.Params{
+p := util.Params{
 		"openid":       "xx",
 }
 
