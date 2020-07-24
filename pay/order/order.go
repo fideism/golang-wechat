@@ -59,3 +59,27 @@ func (order *Order) Query(params util.Params) (*base.Response, error) {
 
 	return base.ProcessResponseXML(xmlStr)
 }
+
+// Close 关闭订单
+func (order *Order) Close(params util.Params) (*base.Response, error) {
+	params = base.Sign(params, order.Config)
+
+	xmlStr, err := base.PostWithoutCert(base.GetCloseOrderURL(order.Config), params)
+	if err != nil {
+		return nil, err
+	}
+
+	return base.ProcessResponseXML(xmlStr)
+}
+
+// Reverse 撤销订单
+func (order *Order) Reverse(params util.Params) (*base.Response, error) {
+	params = base.Sign(params, order.Config)
+
+	xmlStr, err := base.PostWithoutCert(base.GetReverseURL(order.Config), params)
+	if err != nil {
+		return nil, err
+	}
+
+	return base.ProcessResponseXML(xmlStr)
+}

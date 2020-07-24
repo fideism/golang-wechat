@@ -2,11 +2,24 @@
 
 [官方文档](https://pay.weixin.qq.com/wiki/doc/api/index.html)
 
-
+## 目录
+- [请求参数](#请求参数)
+- [响应参数](#响应参数)
+- [实例化支付对象](#实例化支付对象)
+- [下单](#下单)
+- [查询订单](#查询订单)
+- [关闭订单](#关闭订单)
+- [撤销订单](#撤销订单)
+- [退款](#退款)
+- [查询退款](#查询退款)
 
 ### 请求参数
 
-支付内部调用参数传递类型`Params  map[string]interface{}` 
+- 支付内部调用参数传递类型`Params  map[string]interface{}` 
+- `appid` `mch_id` `nonce_str` `sign` `sign_type` 内部会自动传入
+- `spbill_create_ip` 如果外部传入参数没有，后续调用会自动获取
+- `sign_type` 外部不传入，默认`MD5`
+
 ```go
 import "github.com/fideism/golang-wechat/util"
 
@@ -61,11 +74,8 @@ payment := pay.NewPay(&config.Config{
 	})
 ```
 
-### 统一下单
+### 下单
 
-`spbill_create_ip` 如果外部传入参数没有，后续调用会自动获取
-
-`sign_type` 外部不传入，默认`MD5`
 
 ```go
 p := util.Params{
@@ -101,6 +111,28 @@ params := util.Params{
 func (order *Order) Query(params base.Params) (*base.Response, error)
 
 payment.GetOrder().Query()
+```
+
+### 关闭订单
+```go
+params := util.Params{
+    "out_trade_no": "202007240001",
+}
+
+func (order *Order) Close(params base.Params) (*base.Response, error)
+
+payment.GetOrder().Close()
+```
+
+### 撤销订单
+```go
+params := util.Params{
+    "out_trade_no": "202007240001",
+}
+
+func (order *Order) Reverse(params base.Params) (*base.Response, error)
+
+payment.GetOrder().Reverse()
 ```
 
 ### 退款

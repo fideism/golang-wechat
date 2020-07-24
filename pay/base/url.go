@@ -59,6 +59,24 @@ func GetOrderQueryURL(c *config.Config) string {
 	return OrderQueryURL
 }
 
+// GetCloseOrderURL 关闭订单
+func GetCloseOrderURL(c *config.Config) string {
+	if c.Sandbox {
+		return SandboxCloseOrderURL
+	}
+
+	return CloseOrderURL
+}
+
+// GetReverseURL 撤销订单
+func GetReverseURL(c *config.Config) string {
+	if c.Sandbox {
+		return SandboxReverseURL
+	}
+
+	return ReverseURL
+}
+
 // GetRefundURL 退款接口
 func GetRefundURL(c *config.Config) string {
 	if c.Sandbox {
