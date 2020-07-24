@@ -5,6 +5,7 @@ import (
 	"github.com/fideism/golang-wechat/pay/notify"
 	"github.com/fideism/golang-wechat/pay/order"
 	"github.com/fideism/golang-wechat/pay/refund"
+	"github.com/fideism/golang-wechat/pay/server"
 )
 
 //Pay 微信支付相关API
@@ -30,4 +31,9 @@ func (pay *Pay) GetNotify() *notify.Notify {
 // GetRefund  退款
 func (pay *Pay) GetRefund() *refund.Refund {
 	return refund.NewRefund(pay.cfg)
+}
+
+// GetServer Get Server
+func (pay *Pay) GetServer() *server.Server {
+	return server.NewServer(pay.cfg)
 }

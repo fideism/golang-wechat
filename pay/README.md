@@ -12,6 +12,11 @@
 - [撤销订单](#撤销订单)
 - [退款](#退款)
 - [查询退款](#查询退款)
+- [下载交易账单](#下载交易账单)
+- [下载资金账单](#下载资金账单)
+- [交易保障](#交易保障)
+- [付款码查询openid](#付款码查询openid)
+- [拉取订单评价数据](#拉取订单评价数据)
 
 ### 请求参数
 
@@ -52,9 +57,10 @@ p.Set("notify_url", "https://github.com/fideism/golang-wechat")
 import "github.com/fideism/golang-wechat/pay/base"
 
 type Response struct {
-	ReturnCode string       `json:"return_code"`
-	ReturnMsg  string       `json:"return_msg"`
-	Data       base.Params  `json:"data"`
+    ReturnCode string       `json:"return_code"`
+    ReturnMsg  string       `json:"return_msg"`
+    Data       base.Params  `json:"data"`
+    Detail     string       `json:"detail"`
 }
 ```
 
@@ -170,4 +176,82 @@ p := util.Params{
 func (refund *Refund) Query(params base.Params) (*base.Response, error)
 
 payment.GetRefund().Query()
+```
+
+### 下载交易账单
+```go
+p := util.Params{
+    "bill_date": "20191118",
+    "bill_type": "ALL",
+}
+
+func (server *Server) DownloadBill(params util.Params) (*base.Response, error)
+
+payment.GetServer().DownloadBill(p)
+
+//详细数据在 response.Detail 字段里
+```
+
+### 下载资金账单
+```go
+p := util.Params{
+    "bill_date": "20191118",
+    "sign_type": "HMAC-SHA256",
+}
+
+// 证书绝对路径
+cert := config.Cert{
+    Path: "/path/apiclient_cert.p12", 
+}
+
+
+func (server *Server) DownloadFundFlow(params util.Params, cert config.Cert) (*base.Response, error)
+
+payment.GetServer().DownloadFundFlow(p)
+
+//详细数据在 response.Detail 字段里
+```
+
+### 交易保障
+```go
+p := util.Params{
+    "interface_url": "https://api.mch.weixin.qq.com/pay/batchreport/micropay/total",
+    "user_ip": "192.168.1.1",
+}
+
+func (server *Server) Report(params util.Params) (*base.Response, error)
+
+payment.GetServer().Report(p)
+```
+
+### 付款码查询openid
+```go
+p := util.Params{
+    "auth_code": "1365464848",
+}
+
+func (server *Server) AuthCodeToOpenid(params util.Params) (*base.Response, error)
+
+payment.GetServer().AuthCodeToOpenid(p)
+```
+
+### 拉取订单评价数据
+```go
+p := util.Params{
+    "begin_time": "20191118",
+    "end_time": "20191119",
+    "offset":1,
+}
+
+// 证书绝对路径
+cert := config.Cert{
+    Path: "/path/apiclient_cert.p12", 
+}
+
+
+func (server *Server) BatchQueryComment(params util.Params, cert config.Cert) (*base.Response, error)
+
+payment.GetServer().BatchQueryComment(p)
+
+//详细数据在 response.Detail 字段里
 ```

@@ -19,6 +19,7 @@ type Response struct {
 	ReturnCode string      `json:"return_code"`
 	ReturnMsg  string      `json:"return_msg"`
 	Data       util.Params `json:"data"`
+	Detail     string      `json:"detail"`
 }
 
 const contentType = "application/xml; charset=utf-8"
