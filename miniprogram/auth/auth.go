@@ -53,7 +53,12 @@ type ResGetPaidUnionID struct {
 
 //GetPaidUnionID 用户支付完成后，获取该用户的 UnionId，无需用户授权
 func (auth *Auth) GetPaidUnionID(p util.Params) (result ResGetPaidUnionID, err error) {
-	urlStr := paidUnionIDURL(p)
+	token, err := auth.Context.GetAccessToken()
+	if err != nil {
+		return
+	}
+
+	urlStr := paidUnionIDURL(p, token)
 
 	var response []byte
 	response, err = util.HTTPGet(urlStr)
@@ -65,8 +70,8 @@ func (auth *Auth) GetPaidUnionID(p util.Params) (result ResGetPaidUnionID, err e
 	return
 }
 
-func paidUnionIDURL(p util.Params) string {
-	urlStr := fmt.Sprintf(getPaidUnionIDURL, auth.Context.GetAccessToken(), p.GetString(`openid`))
+func paidUnionIDURL(p util.Params, token string) string {
+	urlStr := fmt.Sprintf(getPaidUnionIDURL, token, p.GetString(`openid`))
 	if p.Exists(`transaction_id`) {
 		urlStr += `&transaction_id=` + p.GetString(`transaction_id`)
 	}
