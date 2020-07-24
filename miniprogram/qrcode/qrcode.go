@@ -1,7 +1,6 @@
 package qrcode
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -69,10 +68,10 @@ func (qrCode *QRCode) fetchCode(urlStr string, body interface{}) (response []byt
 	if strings.HasPrefix(contentType, "application/json") {
 		// 返回错误信息
 		var result util.CommonError
-		err = json.Unmarshal(response, &result)
-		if err == nil && result.ErrCode != 0 {
-			err = fmt.Errorf("fetchCode error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-			return nil, err
+
+		err = util.DecodeWithError(response, &result, "fetchCode")
+		if err != nil {
+			return
 		}
 	}
 	if contentType == "image/jpeg" {
