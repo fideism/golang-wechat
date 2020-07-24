@@ -5,16 +5,53 @@
 ## 目录
 - [快速入门](#快速入门)
 - [Token](#Token)
-- [获取微信服务器IP地址](#获取微信服务器IP地址)
-- [清理接口调用频次](#清理接口调用频次)
-- [带参数二维码](#带参数二维码)
+- [基础接口](#基础接口)
+    - [获取微信服务器IP地址](#获取微信服务器IP地址)
+    - [清理接口调用频次](#清理接口调用频次)
+    - [带参数二维码](#带参数二维码)
+    - [短链接](#短链接)
 - [用户](#用户)
+    - [用户列表](#用户列表)
+    - [获取用户基本信息](#获取用户基本信息)
+    - [对指定用户设置备注名](#对指定用户设置备注名)
+    - [新增标签](#新增标签)
+    - [标签列表](#标签列表)
+    - [修改标签](#修改标签)
+    - [删除标签](#删除标签)
+    - [获取标签下粉丝列表](#获取标签下粉丝列表)
+    
 - [菜单](#菜单)
 - [oauth2网页授权](#oauth2网页授权)
 - [素材管理](#素材管理)
+    - [上传图文消息内的图片](#上传图文消息内的图片)
+    - [新增临时素材](#新增临时素材)
+    - [获取临时素材](#获取临时素材)
+    - [新增永久素材](#新增永久素材)
+    - [永久图文素材](#永久图文素材)
+    - [永久视频素材](#永久视频素材)
+    - [其他类型永久素材](#其他类型永久素材)
+    - [删除永久素材](#删除永久素材)
+    - [删除永久素材](#删除永久素材)
+    - [批量获取永久素材](#批量获取永久素材)
+    - [素材总数](#素材总数)
 - [卡券](#卡券)
+    - [颜色](#颜色)
+    - [卡券开放类目查询接口](#卡券开放类目查询接口)
+    - [设置白名单](#设置白名单)
+    - [创建卡券](#创建卡券)
+    - [查看卡券详情](#查看卡券详情)
+    - [修改卡券信息](#修改卡券信息)
+    - [删除卡券](#删除卡券)
+    - [批量查询卡券列表](#批量查询卡券列表)
+    - [设置会员卡开卡字段接口](#设置会员卡开卡字段接口)
+    - [创建卡券二维码](#创建卡券二维码)
 - [消息](#消息)
 - [群发消息](#群发消息)
+    - [群发消息-发送](#发送群消息)
+    - [群发消息-删除](#删除群消息)
+    - [群发消息-预览](#预览群消息)
+    - [群发消息-状态](#群消息状态)
+    - [群发消息-速度](#群消息速度)
 - [模板消息接口](#模板消息接口)
 - [js-sdk配置](#js-sdk配置)
 - [获取智能设备的实例](#获取智能设备的实例)
@@ -66,6 +103,9 @@ token, err := officail.GetAccessToken()
 func (officialAccount *OfficialAccount) SetAccessTokenHandle(accessTokenHandle credential.AccessTokenHandle)
 ```
 
+### 基础接口
+
+
 ### 获取微信服务器IP地址
 
 `callback` IP地址
@@ -111,9 +151,14 @@ req.ActionInfo.Scene.SceneID = 123
 
 - 通过ticket换取二维码
 ```go
-ticket, err := basic.GetQRTicket(req)
+ticket, err := officail.GetBasic().GetQRTicket(req)
 
-qrcode_url := basic.ShowQRCode(ticket)
+qrcode_url := officail.GetBasic().ShowQRCode(ticket)
+```
+
+### 短链接
+```go
+url, err := officail.GetBasic().GetShortURL("https://github.com/fideism/golang-wechat")
 ```
 
 ### 用户
@@ -121,7 +166,8 @@ qrcode_url := basic.ShowQRCode(ticket)
 func (officialAccount *OfficialAccount) GetUser() *user.User
 
 ```
-- 用户列表
+
+### 用户列表
 
 ```go
 // 所有用户openids列表
@@ -131,17 +177,17 @@ func (user *User) ListAllUserOpenIDs() ([]string, error)
 func (user *User) ListUserOpenIDs(nextOpenid ...string) (*OpenidList, error)
 ```
 
-- 获取用户基本信息(UnionID机制)
+### 获取用户基本信息
 ```go
 func (user *User) GetUserInfo(openID string) (userInfo *Info, err error) 
 ```
 
-- 对指定用户设置备注名
+### 对指定用户设置备注名
 ```go
 func (user *User) UpdateRemark(openID, remark string) (err error)
 ```
 
-- 新增`tag`
+### 新增标签
 ```go
 type Tag struct {
 	ID    int64  `json:"id"`
@@ -152,7 +198,7 @@ type Tag struct {
 func (user *User) CreateTag(name string) (tag Tag, err error)
 ```
 
-- `tag`列表
+### 标签列表
 ```go
 type Tag struct {
 	ID    int64  `json:"id"`
@@ -163,17 +209,17 @@ type Tag struct {
 func (user *User) TagList() (tags []Tag, err error)
 ```
 
-- 修改`tag`
+### 修改标签
 ```go
 func (user *User) UpdateTag(tagID int, name string) (err error)
 ```
 
-- 删除`tag`
+### 删除标签
 ```go
 func (user *User) DeleteTag(tagID int) (err error)
 ```
 
-- 获取标签下粉丝列表
+### 获取标签下粉丝列表
 ```go
 type TagUser struct {
 	Count int `json:"count"`
@@ -203,7 +249,7 @@ func (officialAccount *OfficialAccount) GetOauth() *oauth.Oauth
 func (officialAccount *OfficialAccount) GetMaterial() *material.Material
 ```
 
-- 上传图片
+### 上传图文消息内的图片
 ```go
 func (material *Material) UploadImage(filename string) (url string, err error)
 
@@ -211,12 +257,121 @@ func (material *Material) UploadImage(filename string) (url string, err error)
 url, err := officail.GetMaterial().UploadImage(path)
 ```
 
+### 新增临时素材
+```go
+//MediaTypeImage 媒体文件:图片
+MediaTypeImage MediaType = "image"
+//MediaTypeVoice 媒体文件:声音
+MediaTypeVoice MediaType = "voice"
+//MediaTypeVideo 媒体文件:视频
+MediaTypeVideo MediaType = "video"
+//MediaTypeThumb 媒体文件:缩略图
+MediaTypeThumb MediaType = "thumb"
+//Media 临时素材上传返回信息
+type Media struct {
+    ErrCode int64  `json:"errcode"`
+    ErrMsg  string `json:"errmsg"`
+    Type         MediaType `json:"type"`
+    MediaID      string    `json:"media_id"`
+    ThumbMediaID string    `json:"thumb_media_id"`
+    CreatedAt    int64     `json:"created_at"`
+}
+
+func (material *Material) MediaUpload(mediaType MediaType, filename string) (media Media, err error)
+```
+
+### 获取临时素材
+```go
+func (material *Material) GetMediaURL(mediaID string) (mediaURL string, err error)
+```
+
+### 永久图文素材
+```go
+//永久图文素材
+type Article struct {
+	Title            string `json:"title"`
+	ThumbMediaID     string `json:"thumb_media_id"`
+	ThumbURL         string `json:"thumb_url"`
+	Author           string `json:"author"`
+	Digest           string `json:"digest"`
+	ShowCoverPic     int    `json:"show_cover_pic"`
+	Content          string `json:"content"`
+	ContentSourceURL string `json:"content_source_url"`
+	URL              string `json:"url"`
+	DownURL          string `json:"down_url"`
+}
+func (material *Material) AddNews(articles []*Article) (mediaID string, err error)
+
+//获取
+func (material *Material) GetNews(id string) ([]*Article, error)
+
+// UpdateNews 更新永久图文素材
+func (material *Material) UpdateNews(article *Article, mediaID string, index int64) (err error)
+```
+
+### 永久视频素材
+```go
+//resAddMaterial 永久性素材上传返回的结果
+type resAddMaterial struct {
+    ErrCode int64  `json:"errcode"`
+    ErrMsg  string `json:"errmsg"`
+    MediaID string `json:"media_id"`
+    URL     string `json:"url"`
+}
+
+func (material *Material) AddVideo(filename, title, introduction string) (mediaID string, url string, err error)
+```
+
+### 其他类型永久素材
+```go
+//MediaTypeImage 媒体文件:图片
+MediaTypeImage MediaType = "image"
+//MediaTypeVoice 媒体文件:声音
+MediaTypeVoice MediaType = "voice"
+//MediaTypeThumb 媒体文件:缩略图
+MediaTypeThumb MediaType = "thumb"
+//AddMaterial 上传永久性素材（处理视频需要单独上传）
+func (material *Material) AddMaterial(mediaType MediaType, filename string) (mediaID string, url string, err error)
+```
+
+### 删除永久素材
+```go
+func (material *Material) DeleteMaterial(mediaID string) error
+```
+
+### 批量获取永久素材
+```go
+//PermanentMaterialTypeImage 永久素材图片类型（image）
+PermanentMaterialTypeImage PermanentMaterialType = "image"
+//PermanentMaterialTypeVideo 永久素材视频类型（video）
+PermanentMaterialTypeVideo PermanentMaterialType = "video"
+//PermanentMaterialTypeVoice 永久素材语音类型 （voice）
+PermanentMaterialTypeVoice PermanentMaterialType = "voice"
+//PermanentMaterialTypeNews 永久素材图文类型（news）
+PermanentMaterialTypeNews PermanentMaterialType = "news"
+func (material *Material) BatchGetMaterial(permanentMaterialType PermanentMaterialType, offset, count int64) (list ArticleList, err error)
+```
+
+### 素材总数
+```go
+// ResMaterialCount 素材总数
+type ResMaterialCount struct {
+    ErrCode int64  `json:"errcode"`
+    ErrMsg  string `json:"errmsg"`
+    VoiceCount int64 `json:"voice_count"` // 语音总数量
+    VideoCount int64 `json:"video_count"` // 视频总数量
+    ImageCount int64 `json:"image_count"` // 图片总数量
+    NewsCount  int64 `json:"news_count"`  // 图文总数量
+}
+func (material *Material) GetMaterialCount() (res ResMaterialCount, err error)
+```
+
 ### 卡券
 ```go
 func (officialAccount *OfficialAccount) GetCard() *card.Card
 ```
 
-- 颜色
+### 颜色
 ```go
 
 type Colors struct {
@@ -229,7 +384,7 @@ res, err := officail.GetCard().GetColors()
 ```
 
 
-- 卡券开放类目查询接口
+### 卡券开放类目查询接口
 ```go
 type Category struct {
 	PrimaryCategoryID int64  `json:"primary_category_id"`
@@ -247,20 +402,22 @@ type Category struct {
 res, _ := officail.GetCard().GetApplyProtocol()
 ```
 
-- 设置白名单
+### 设置白名单
 ```go
 func (card *Card) SetWhiteListByOpenid(openids []string) (err error)
 
 func (card *Card) SetWhiteListByUsername(names []string) (err error)
 ```
 
-- 创建卡券
+### 创建卡券
 
-所有创建卡券信息都调用该接口就行，传入不同的`card_type` 以及对应卡券所需要的字段信息`map[string]interface{}{.....}`
+所有创建卡券信息都调用该接口就行，传入不同的`card_type` 以及对应卡券所需要的字段信息`util.Params`
 
 ```go
 // 示例创建一张会员卡
-attrs := map[string]interface{}{
+"github.com/fideism/golang-wechat/util"
+
+attrs := util.Params{
     "background_pic_url" : cardImage,
     "prerogative" : "可参与丰富的会员专享活动，详情参看相关活动页面",
     "supply_bonus" : false,//显示积分
@@ -320,26 +477,26 @@ attrs := map[string]interface{}{
 cardID, err := officail.GetCard().CreateCard(card.MemberCard, attrs)
 ```
 
-- 查看卡券详情
+### 查看卡券详情
 ```go
-// 卡券ID  返回 map[string]interface{}
+// 卡券ID  返回 util.Params
 card, err := officail.GetCard().GetCard("xxxxx")
 ```
 
-- 修改卡券信息
+### 修改卡券信息
 ```go
 // 卡券ID 卡券类型 卡券其他字段参考新增卡券接口
 // 返回 是否提交审核，false为修改后不会重新提审，true为修改字段后重新提审，该卡券的状态变为审核中
-func (card *Card) UpdateCard(cardID string, t Type, attrs interface{}) (check bool, err error)
+func (card *Card) UpdateCard(cardID string, t Type, attrs util.Params) (check bool, err error)
 ```
 
-- 删除卡券
+### 删除卡券
 ```go
 // 卡券ID 
 func (card *Card) DeleteCard(cardID string) (err error)
 ```
 
-- 批量查询卡券列表
+### 批量查询卡券列表
 ```go
 // BatchGetRequest 批量查询卡券列表 请求参数
 type BatchGetRequest struct {
@@ -357,10 +514,10 @@ type BatchCardList struct {
 func (card *Card) BatchGet(req BatchGetRequest) (res BatchCardList, err error)
 ```
 
-- 设置会员卡开卡字段接口
+### 设置会员卡开卡字段接口
 ```go
 // 示例
-attrs := map[string]interface{}{
+attrs := util.Params{
     "required_form": map[string]interface{}{
         "common_field_id_list": []string{"USER_FORM_INFO_FLAG_NAME", "USER_FORM_INFO_FLAG_MOBILE"},
     },
@@ -370,12 +527,12 @@ attrs := map[string]interface{}{
 }
 
 // cardid 卡ID  map[string]interface{} 详细字段信息
-func (card *Card) SetActivateUserForm(cardID string, attrs map[string]interface{}) (err error)
+func (card *Card) SetActivateUserForm(cardID string, attrs util.Params) (err error)
 ```
 
-- 创建卡券二维码
+### 创建卡券二维码
 ```go
-attrs := map[string]interface{}{
+attrs := util.Params{
     "action_name": "QR_CARD",
     "action_info": map[string]interface{}{
         "card": map[string]interface{}{
@@ -393,7 +550,7 @@ type Qrcode struct {
 }
 
 // map[string]interface{} 详细字段信息
-func (card *Card) CreateCardQrcode(attr map[string]interface{}) (res Qrcode, err error)
+func (card *Card) CreateCardQrcode(attr util.Params) (res Qrcode, err error)
 ```
 
 ### 消息
@@ -483,6 +640,85 @@ func (officialAccount *OfficialAccount) GetJs() *js.Js
 ### 群发消息
 ```go
 func (officialAccount *OfficialAccount) GetBroadcast() *broadcast.Broadcast
+
+// 消息发送用户
+type User struct {
+	TagID  int64
+	OpenID []string
+}
+//user 为nil，表示全员发送
+//&User{TagID:2} 根据tag发送
+//&User{OpenID:[]string("xxx","xxx")} 根据openid发送
+
+
+//Result 群发返回结果
+type Result struct {
+    ErrCode int64  `json:"errcode"`
+    ErrMsg  string `json:"errmsg"`
+    MsgID     int64 `json:"msg_id"`
+    MsgDataID int64 `json:"msg_data_id"`
+}
+```
+
+### 发送群消息
+```go
+//组装数据发送
+import github.com/fideism/golang-wechat/util
+p := util.Params{
+    "filter": map[string]interface{}{
+        "is_to_all": false,
+        "tag_id":    100,
+    },
+    "text": map[string]string{
+        "content": "11111111111111111111111111111111",
+    },
+    "msgtype": "text",
+}
+// SendAll 根据标签进行群发
+// https://api.weixin.qq.com/cgi-bin/message/mass/sendall
+func (broadcast *Broadcast) SendAll(params util.Params) (res *Result, err error)
+// SendByOpenID 根据标签进行群发
+// https://api.weixin.qq.com/cgi-bin/message/mass/send
+func (broadcast *Broadcast) SendByOpenID(params util.Params) (res *Result, err error)
+```
+
+### 删除群消息
+```go
+func (broadcast *Broadcast) Delete(msgID int64, articleIDx int64) error
+```
+
+### 预览群消息
+```go
+import github.com/fideism/golang-wechat/util
+
+p := util.Params{
+    "text": map[string]string{
+        "content": "world",
+    },
+    "msgtype": "text",
+}
+
+err := broad.PreviewOpenid("openid", p)
+
+func (broadcast *Broadcast) PreviewWxName(name string, params util.Params) (err error)
+func (broadcast *Broadcast) PreviewOpenid(openid string, params util.Params) (err error)
+```
+
+### 群消息状态
+```go
+type GetResult struct {
+    ErrCode int64  `json:"errcode"`
+    ErrMsg  string `json:"errmsg"`
+    MsgID     int64  `json:"msg_id"`
+    MsgStatus string `json:"msg_status"`
+}
+
+func (broadcast *Broadcast) GetMass(msgID int64) (res *GetResult, err error)
+```
+
+### 群消息速度
+```go
+func (broadcast *Broadcast) Speed(speed, realspeed int64) (err error)
 ```
 
 ### 模板消息接口

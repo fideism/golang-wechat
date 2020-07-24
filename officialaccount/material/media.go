@@ -1,7 +1,6 @@
 package material
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/fideism/golang-wechat/util"
@@ -30,7 +29,6 @@ const (
 //Media 临时素材上传返回信息
 type Media struct {
 	util.CommonError
-
 	Type         MediaType `json:"type"`
 	MediaID      string    `json:"media_id"`
 	ThumbMediaID string    `json:"thumb_media_id"`
@@ -51,14 +49,9 @@ func (material *Material) MediaUpload(mediaType MediaType, filename string) (med
 	if err != nil {
 		return
 	}
-	err = json.Unmarshal(response, &media)
-	if err != nil {
-		return
-	}
-	if media.ErrCode != 0 {
-		err = fmt.Errorf("MediaUpload error : errcode=%v , errmsg=%v", media.ErrCode, media.ErrMsg)
-		return
-	}
+
+	err = util.DecodeWithError(response, &media, "MediaUpload")
+
 	return
 }
 
@@ -74,14 +67,7 @@ func (material *Material) GetMediaURL(mediaID string) (mediaURL string, err erro
 	return
 }
 
-//resMediaImage 图片上传返回结果
-type resMediaImage struct {
-	util.CommonError
-
-	URL string `json:"url"`
-}
-
-//UploadImage 图片上传
+//UploadImage 上传图文消息内的图片
 func (material *Material) UploadImage(filename string) (url string, err error) {
 	var accessToken string
 	accessToken, err = material.GetAccessToken()
@@ -90,20 +76,24 @@ func (material *Material) UploadImage(filename string) (url string, err error) {
 	}
 
 	uri := fmt.Sprintf("%s?access_token=%s", mediaUploadImageURL, accessToken)
+
 	var response []byte
 	response, err = util.PostFile("media", filename, uri)
 	if err != nil {
 		return
 	}
-	var image resMediaImage
-	err = json.Unmarshal(response, &image)
+	var image struct {
+		util.CommonError
+
+		URL string `json:"url"`
+	}
+
+	err = util.DecodeWithError(response, &image, "UploadImage")
+
 	if err != nil {
 		return
 	}
-	if image.ErrCode != 0 {
-		err = fmt.Errorf("UploadImage error : errcode=%v , errmsg=%v", image.ErrCode, image.ErrMsg)
-		return
-	}
+
 	url = image.URL
 	return
 }

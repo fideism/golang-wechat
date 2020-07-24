@@ -81,6 +81,37 @@ func main() {
 
 ```
 
+### 参数
+
+`Params util.Params`
+
+```go
+import "github.com/fideism/golang-wechat/util"
+
+// Params map[string]interface{}
+type Params map[string]interface{}
+
+// Set 设置值
+func (p Params) Set(k string, v interface{})
+
+// Get 获取值
+func (p Params) Get(k string) (v interface{})
+
+// GetString 强制获取k对应的v string类型
+func (p Params) GetString(k string) string
+
+// Exists 判断是否存在
+func (p Params) Exists(k string) bool
+
+//具体使用
+p := util.Params{
+    "openid": "xx",
+}
+
+//alse can
+p.Set("notify_url", "https://github.com/fideism/golang-wechat")
+```
+
 ### 日志
 默认记录`debug`级别日志
 

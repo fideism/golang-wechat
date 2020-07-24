@@ -79,7 +79,8 @@ func (material *Material) GetNews(id string) ([]*Article, error) {
 	var res struct {
 		NewsItem []*Article `json:"news_item"`
 	}
-	err = json.Unmarshal(responseBytes, &res)
+
+	err = util.DecodeWithCustomerStruct(responseBytes, &res, "GetNews")
 	if err != nil {
 		return nil, err
 	}
@@ -176,14 +177,11 @@ func (material *Material) AddMaterial(mediaType MediaType, filename string) (med
 		return
 	}
 	var resMaterial resAddMaterial
-	err = json.Unmarshal(response, &resMaterial)
+	err = util.DecodeWithError(response, &resMaterial, "AddMaterial")
 	if err != nil {
 		return
 	}
-	if resMaterial.ErrCode != 0 {
-		err = fmt.Errorf("AddMaterial error : errcode=%v , errmsg=%v", resMaterial.ErrCode, resMaterial.ErrMsg)
-		return
-	}
+
 	mediaID = resMaterial.MediaID
 	url = resMaterial.URL
 	return
@@ -234,14 +232,12 @@ func (material *Material) AddVideo(filename, title, introduction string) (mediaI
 	}
 
 	var resMaterial resAddMaterial
-	err = json.Unmarshal(response, &resMaterial)
+
+	err = util.DecodeWithError(response, &resMaterial, "AddVideo")
 	if err != nil {
 		return
 	}
-	if resMaterial.ErrCode != 0 {
-		err = fmt.Errorf("AddMaterial error : errcode=%v , errmsg=%v", resMaterial.ErrCode, resMaterial.ErrMsg)
-		return
-	}
+
 	mediaID = resMaterial.MediaID
 	url = resMaterial.URL
 	return

@@ -15,6 +15,9 @@ var (
 
 	//清理接口调用次数
 	clearQuotaURL = "https://api.weixin.qq.com/cgi-bin/clear_quota"
+
+	//shortURL短链接
+	shortURL = "https://api.weixin.qq.com/cgi-bin/shorturl"
 )
 
 //Basic struct
@@ -81,4 +84,28 @@ func (basic *Basic) ClearQuota() error {
 		return err
 	}
 	return util.DecodeWithCommonError(data, "ClearQuota")
+}
+
+// GetShortURL 短链接
+func (basic *Basic) GetShortURL(url string) (string, error) {
+	ak, err := basic.GetAccessToken()
+	if err != nil {
+		return "", err
+	}
+
+	data, err := util.PostJSON(fmt.Sprintf("%s?access_token=%s", shortURL, ak), map[string]string{
+		"long_url": url,
+		"action":   "long2short",
+	})
+
+	var res struct {
+		util.CommonError
+		ShortURL string `json:"short_url"`
+	}
+
+	if err := util.DecodeWithError(data, &res, "GetShortURL"); err != nil {
+		return "", err
+	}
+
+	return res.ShortURL, nil
 }

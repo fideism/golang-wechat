@@ -6,7 +6,7 @@ import (
 )
 
 // SetActivateUserForm 设置开卡字段接口
-func (card *Card) SetActivateUserForm(cardID string, attrs map[string]interface{}) (err error) {
+func (card *Card) SetActivateUserForm(cardID string, attrs util.Params) (err error) {
 	var token string
 	token, err = card.GetAccessToken()
 	if err != nil {

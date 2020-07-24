@@ -57,7 +57,7 @@ func NewCard(context *context.Context) *Card {
 }
 
 // CreateCard 创建卡券
-func (card *Card) CreateCard(t Type, attrs interface{}) (cardID string, err error) {
+func (card *Card) CreateCard(t Type, attrs util.Params) (cardID string, err error) {
 	var token string
 	token, err = card.GetAccessToken()
 	if err != nil {
@@ -94,7 +94,7 @@ func (card *Card) CreateCard(t Type, attrs interface{}) (cardID string, err erro
 }
 
 // UpdateCard 修改卡券信息
-func (card *Card) UpdateCard(cardID string, t Type, attrs interface{}) (check bool, err error) {
+func (card *Card) UpdateCard(cardID string, t Type, attrs util.Params) (check bool, err error) {
 	var token string
 	token, err = card.GetAccessToken()
 	if err != nil {
@@ -129,7 +129,7 @@ func (card *Card) UpdateCard(cardID string, t Type, attrs interface{}) (check bo
 }
 
 // GetCard 获取卡券详情
-func (card *Card) GetCard(cardID string) (res map[string]interface{}, err error) {
+func (card *Card) GetCard(cardID string) (res util.Params, err error) {
 	var token string
 	token, err = card.GetAccessToken()
 	if err != nil {
@@ -147,7 +147,7 @@ func (card *Card) GetCard(cardID string) (res map[string]interface{}, err error)
 
 	var cardInfo struct {
 		util.CommonError
-		Card map[string]interface{} `json:"card"`
+		Card util.Params `json:"card"`
 	}
 
 	err = util.DecodeWithError(response, &cardInfo, "GetCard")
@@ -237,7 +237,7 @@ type Qrcode struct {
 }
 
 // CreateCardQrcode 创建卡券二维码
-func (card *Card) CreateCardQrcode(attr map[string]interface{}) (res Qrcode, err error) {
+func (card *Card) CreateCardQrcode(attr util.Params) (res Qrcode, err error) {
 	var token string
 	token, err = card.GetAccessToken()
 	if err != nil {

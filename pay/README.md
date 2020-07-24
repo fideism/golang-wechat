@@ -20,7 +20,7 @@
 
 ### 请求参数
 
-- 支付内部调用参数传递类型`Params  map[string]interface{}` 
+- 支付内部调用参数传递类型`Params  util.Params` 
 - `appid` `mch_id` `nonce_str` `sign` `sign_type` 内部会自动传入
 - `spbill_create_ip` 如果外部传入参数没有，后续调用会自动获取
 - `sign_type` 外部不传入，默认`MD5`
