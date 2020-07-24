@@ -2,13 +2,31 @@
 
 [官方文档](https://pay.weixin.qq.com/wiki/doc/api/index.html)
 
-
+## 目录
+- [请求参数](#请求参数)
+- [响应参数](#响应参数)
+- [实例化支付对象](#实例化支付对象)
+- [下单](#下单)
+- [查询订单](#查询订单)
+- [关闭订单](#关闭订单)
+- [撤销订单](#撤销订单)
+- [退款](#退款)
+- [查询退款](#查询退款)
+- [下载交易账单](#下载交易账单)
+- [下载资金账单](#下载资金账单)
+- [交易保障](#交易保障)
+- [付款码查询openid](#付款码查询openid)
+- [拉取订单评价数据](#拉取订单评价数据)
 
 ### 请求参数
 
-支付内部调用参数传递类型`Params  map[string]interface{}` 
+- 支付内部调用参数传递类型`Params  map[string]interface{}` 
+- `appid` `mch_id` `nonce_str` `sign` `sign_type` 内部会自动传入
+- `spbill_create_ip` 如果外部传入参数没有，后续调用会自动获取
+- `sign_type` 外部不传入，默认`MD5`
+
 ```go
-import "github.com/fideism/golang-wechat/pay/base"
+import "github.com/fideism/golang-wechat/util"
 
 // Params map[string]interface{}
 type Params map[string]interface{}
@@ -26,7 +44,7 @@ func (p Params) GetString(k string) string
 func (p Params) Exists(k string) bool
 
 //具体使用
-p := base.Params{
+p := util.Params{
 		"openid":       "xx",
 }
 
@@ -39,9 +57,10 @@ p.Set("notify_url", "https://github.com/fideism/golang-wechat")
 import "github.com/fideism/golang-wechat/pay/base"
 
 type Response struct {
-	ReturnCode string       `json:"return_code"`
-	ReturnMsg  string       `json:"return_msg"`
-	Data       base.Params  `json:"data"`
+    ReturnCode string       `json:"return_code"`
+    ReturnMsg  string       `json:"return_msg"`
+    Data       base.Params  `json:"data"`
+    Detail     string       `json:"detail"`
 }
 ```
 
@@ -61,14 +80,11 @@ payment := pay.NewPay(&config.Config{
 	})
 ```
 
-### 统一下单
+### 下单
 
-`spbill_create_ip` 如果外部传入参数没有，后续调用会自动获取
-
-`sign_type` 外部不传入，默认`MD5`
 
 ```go
-p := base.Params{
+p := util.Params{
 		"out_trade_no": "202007230001",
 		"total_fee":    1,
 		"body":         "测试支付统一下单",
@@ -94,13 +110,35 @@ func (order *Order) MicroPay(params base.Params) (*base.Response, error)
 
 ### 查询订单
 ```go
-params := base.Params{
+params := util.Params{
     "transaction_id": "4200000235201812131594207984",
 }
 
 func (order *Order) Query(params base.Params) (*base.Response, error)
 
 payment.GetOrder().Query()
+```
+
+### 关闭订单
+```go
+params := util.Params{
+    "out_trade_no": "202007240001",
+}
+
+func (order *Order) Close(params base.Params) (*base.Response, error)
+
+payment.GetOrder().Close()
+```
+
+### 撤销订单
+```go
+params := util.Params{
+    "out_trade_no": "202007240001",
+}
+
+func (order *Order) Reverse(params base.Params) (*base.Response, error)
+
+payment.GetOrder().Reverse()
 ```
 
 ### 退款
@@ -110,7 +148,7 @@ payment.GetOrder().Query()
 ```go
 github.com/fideism/golang-wechat/pay/config
 
-p := base.Params{
+p := util.Params{
     "sub_mch_id":     "1512175241",
     "transaction_id": "4200000235201812131594207984",
     "out_refund_no":  "202007230001111",
@@ -130,7 +168,7 @@ payment.GetRefund().Refund()
 
 ### 查询退款
 ```go
-p := base.Params{
+p := util.Params{
     "sub_mch_id": "1512175241",
     "refund_id":  "50000701192019070910499634214",
 }
@@ -138,4 +176,82 @@ p := base.Params{
 func (refund *Refund) Query(params base.Params) (*base.Response, error)
 
 payment.GetRefund().Query()
+```
+
+### 下载交易账单
+```go
+p := util.Params{
+    "bill_date": "20191118",
+    "bill_type": "ALL",
+}
+
+func (server *Server) DownloadBill(params util.Params) (*base.Response, error)
+
+payment.GetServer().DownloadBill(p)
+
+//详细数据在 response.Detail 字段里
+```
+
+### 下载资金账单
+```go
+p := util.Params{
+    "bill_date": "20191118",
+    "sign_type": "HMAC-SHA256",
+}
+
+// 证书绝对路径
+cert := config.Cert{
+    Path: "/path/apiclient_cert.p12", 
+}
+
+
+func (server *Server) DownloadFundFlow(params util.Params, cert config.Cert) (*base.Response, error)
+
+payment.GetServer().DownloadFundFlow(p)
+
+//详细数据在 response.Detail 字段里
+```
+
+### 交易保障
+```go
+p := util.Params{
+    "interface_url": "https://api.mch.weixin.qq.com/pay/batchreport/micropay/total",
+    "user_ip": "192.168.1.1",
+}
+
+func (server *Server) Report(params util.Params) (*base.Response, error)
+
+payment.GetServer().Report(p)
+```
+
+### 付款码查询openid
+```go
+p := util.Params{
+    "auth_code": "1365464848",
+}
+
+func (server *Server) AuthCodeToOpenid(params util.Params) (*base.Response, error)
+
+payment.GetServer().AuthCodeToOpenid(p)
+```
+
+### 拉取订单评价数据
+```go
+p := util.Params{
+    "begin_time": "20191118",
+    "end_time": "20191119",
+    "offset":1,
+}
+
+// 证书绝对路径
+cert := config.Cert{
+    Path: "/path/apiclient_cert.p12", 
+}
+
+
+func (server *Server) BatchQueryComment(params util.Params, cert config.Cert) (*base.Response, error)
+
+payment.GetServer().BatchQueryComment(p)
+
+//详细数据在 response.Detail 字段里
 ```
