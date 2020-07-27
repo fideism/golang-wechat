@@ -14,11 +14,11 @@ const getTicketURL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_
 
 //DefaultJsTicket 默认获取js ticket方法
 type DefaultJsTicket struct {
-	appID          string
-	cacheKeyPrefix string
-	cache          cache.Cache
-	//jsAPITicket 读写锁 同一个AppID一个
+	appID           string
+	cacheKeyPrefix  string
+	cache           cache.Cache
 	jsAPITicketLock *sync.Mutex
+	//jsAPITicket 读写锁 同一个AppID一个
 }
 
 //NewDefaultJsTicket new
