@@ -1,7 +1,6 @@
 package credential
 
 import (
-	"encoding/json"
 	"fmt"
 	"sync"
 	"time"
@@ -87,13 +86,6 @@ func GetTokenFromServer(appID, appSecret string) (resAccessToken ResAccessToken,
 	if err != nil {
 		return
 	}
-	err = json.Unmarshal(body, &resAccessToken)
-	if err != nil {
-		return
-	}
-	if resAccessToken.ErrMsg != "" {
-		err = fmt.Errorf("get access_token error : errcode=%v , errormsg=%v", resAccessToken.ErrCode, resAccessToken.ErrMsg)
-		return
-	}
+	err = util.DecodeWithError(body, &resAccessToken, `GetTokenFromServer`)
 	return
 }

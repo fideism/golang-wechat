@@ -1,7 +1,6 @@
 package credential
 
 import (
-	"encoding/json"
 	"fmt"
 	"sync"
 	"time"
@@ -71,13 +70,7 @@ func GetTicketFromServer(accessToken string) (ticket ResTicket, err error) {
 	if err != nil {
 		return
 	}
-	err = json.Unmarshal(response, &ticket)
-	if err != nil {
-		return
-	}
-	if ticket.ErrCode != 0 {
-		err = fmt.Errorf("getTicket Error : errcode=%d , errmsg=%s", ticket.ErrCode, ticket.ErrMsg)
-		return
-	}
+
+	err = util.DecodeWithError(response, &ticket, `GetTicketFromServer`)
 	return
 }
