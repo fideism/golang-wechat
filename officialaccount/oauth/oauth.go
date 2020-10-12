@@ -19,6 +19,12 @@ const (
 	checkAccessTokenURL    = "https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s"
 )
 
+// ScopeBase scope base
+const ScopeBase = `snsapi_base`
+
+// ScopeUserInfo scope user info
+const ScopeUserInfo = `snsapi_userinfo`
+
 //Oauth 保存用户授权信息
 type Oauth struct {
 	*context.Context
