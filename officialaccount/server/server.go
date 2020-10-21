@@ -10,9 +10,9 @@ import (
 	"runtime/debug"
 	"strconv"
 
+	logger "github.com/fideism/golang-wechat/log"
 	"github.com/fideism/golang-wechat/officialaccount/context"
 	"github.com/fideism/golang-wechat/officialaccount/message"
-	log "github.com/sirupsen/logrus"
 
 	"github.com/fideism/golang-wechat/util"
 )
@@ -55,7 +55,7 @@ func (srv *Server) SkipValidate(skip bool) {
 //Serve 处理微信的请求消息
 func (srv *Server) Serve() error {
 	if !srv.Validate() {
-		log.Error("Validate Signature Failed.")
+		logger.Entry().Debugf("Validate Signature Failed.")
 		return fmt.Errorf("请求校验失败")
 	}
 
@@ -70,8 +70,7 @@ func (srv *Server) Serve() error {
 		return err
 	}
 
-	//debug print request msg
-	log.Debugf("request msg =%s", string(srv.RequestRawXMLMsg))
+	logger.Entry().Debugf("request msg =%s", string(srv.RequestRawXMLMsg))
 
 	return srv.buildResponse(response)
 }
@@ -84,7 +83,9 @@ func (srv *Server) Validate() bool {
 	timestamp := srv.Query("timestamp")
 	nonce := srv.Query("nonce")
 	signature := srv.Query("signature")
-	log.Debugf("validate signature, timestamp=%s, nonce=%s", timestamp, nonce)
+
+	logger.Entry().Debugf("validate signature, timestamp=%s, nonce=%s", timestamp, nonce)
+
 	return signature == util.Signature(srv.Token, timestamp, nonce)
 }
 
@@ -224,7 +225,7 @@ func (srv *Server) buildResponse(reply *message.Reply) (err error) {
 //Send 将自定义的消息发送
 func (srv *Server) Send() (err error) {
 	replyMsg := srv.ResponseMsg
-	log.Debugf("response msg =%+v", replyMsg)
+	logger.Entry().Debugf("response msg =%+v", replyMsg)
 	if srv.isSafeMode {
 		//安全模式下对消息进行加密
 		var encryptedMsg []byte
