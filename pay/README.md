@@ -80,6 +80,8 @@ payment := pay.NewPay(&config.Config{
 	})
 ```
 
+---
+
 ### 下单
 
 
@@ -100,6 +102,8 @@ response, err := payment.GetOrder().Unify(p)
 //{SUCCESS OK map[result_code:SUCCESS return_code:SUCCESS return_msg:OK  trade_type:JSAPI.......]}
 ```
 
+---
+
 - 下单类型
 ```go
 //APP支付 JSAPI支付 扫码支付 H5支付 小程序支付
@@ -119,6 +123,8 @@ func (order *Order) Query(params base.Params) (*base.Response, error)
 payment.GetOrder().Query()
 ```
 
+---
+
 ### 关闭订单
 ```go
 params := util.Params{
@@ -130,6 +136,8 @@ func (order *Order) Close(params base.Params) (*base.Response, error)
 payment.GetOrder().Close()
 ```
 
+---
+
 ### 撤销订单
 ```go
 params := util.Params{
@@ -140,6 +148,8 @@ func (order *Order) Reverse(params base.Params) (*base.Response, error)
 
 payment.GetOrder().Reverse()
 ```
+
+---
 
 ### 退款
 
@@ -166,6 +176,8 @@ func (order *Order) Refund(params base.Params, cert config.Cert) (*base.Response
 payment.GetRefund().Refund()
 ```
 
+---
+
 ### 查询退款
 ```go
 p := util.Params{
@@ -177,6 +189,8 @@ func (refund *Refund) Query(params base.Params) (*base.Response, error)
 
 payment.GetRefund().Query()
 ```
+
+---
 
 ### 下载交易账单
 ```go
@@ -191,6 +205,8 @@ payment.GetServer().DownloadBill(p)
 
 //详细数据在 response.Detail 字段里
 ```
+
+---
 
 ### 下载资金账单
 ```go
@@ -212,6 +228,8 @@ payment.GetServer().DownloadFundFlow(p)
 //详细数据在 response.Detail 字段里
 ```
 
+---
+
 ### 交易保障
 ```go
 p := util.Params{
@@ -224,6 +242,8 @@ func (server *Server) Report(params util.Params) (*base.Response, error)
 payment.GetServer().Report(p)
 ```
 
+---
+
 ### 付款码查询openid
 ```go
 p := util.Params{
@@ -234,6 +254,8 @@ func (server *Server) AuthCodeToOpenid(params util.Params) (*base.Response, erro
 
 payment.GetServer().AuthCodeToOpenid(p)
 ```
+
+---
 
 ### 拉取订单评价数据
 ```go
@@ -254,4 +276,15 @@ func (server *Server) BatchQueryComment(params util.Params, cert config.Cert) (*
 payment.GetServer().BatchQueryComment(p)
 
 //详细数据在 response.Detail 字段里
+```
+
+---
+
+### 解析支付通知结果
+
+```go
+
+func (n *Notify) AnalysisPayNotify(context []byte) (*PayNotifyXML, error) {
+
+payment.GetNotify().AnalysisPayNotify(http_body)
 ```
