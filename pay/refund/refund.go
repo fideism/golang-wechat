@@ -17,10 +17,10 @@ func NewRefund(cfg *config.Config) *Refund {
 }
 
 // Refund 退款
-func (refund *Refund) Refund(params util.Params, cert config.Cert) (*base.Response, error) {
+func (refund *Refund) Refund(params util.Params, certCfg config.Cert) (*base.Response, error) {
 	params = base.Sign(params, refund.Config)
 
-	tsl, err := base.CertTLSConfig(refund.Config.MchID, cert.Path)
+	tsl, err := base.CertTLSConfig(refund.Config.MchID, certCfg)
 	if err != nil {
 		return nil, err
 	}
