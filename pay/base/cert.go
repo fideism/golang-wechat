@@ -3,19 +3,24 @@ package base
 import (
 	"crypto/tls"
 	"encoding/pem"
-	logger "github.com/fideism/golang-wechat/log"
-	"golang.org/x/crypto/pkcs12"
 	"io/ioutil"
+
+	logger "github.com/fideism/golang-wechat/log"
+	"github.com/fideism/golang-wechat/pay/config"
+	"golang.org/x/crypto/pkcs12"
 )
 
 // CertTLSConfig 证书 tls
-func CertTLSConfig(mchID, path string) (*tls.Config, error) {
-	certData, err := ioutil.ReadFile(path)
+func CertTLSConfig(mchID string, certCfg config.Cert) (*tls.Config, error) {
+	certData, err := getCertByte(certCfg)
 	if err != nil {
 		return nil, err
 	}
 
 	blocks, err := pkcs12.ToPEM(certData, mchID)
+	if err != nil {
+		return nil, err
+	}
 
 	defer func() {
 		if x := recover(); x != nil {
@@ -23,23 +28,25 @@ func CertTLSConfig(mchID, path string) (*tls.Config, error) {
 		}
 	}()
 
-	if err != nil {
-		return nil, err
-	}
-
 	var pemData []byte
 	for _, b := range blocks {
 		pemData = append(pemData, pem.EncodeToMemory(b)...)
 	}
 
-	pem, err := tls.X509KeyPair(pemData, pemData)
+	keyPair, err := tls.X509KeyPair(pemData, pemData)
 	if err != nil {
 		return nil, err
 	}
 
-	config := &tls.Config{
-		Certificates: []tls.Certificate{pem},
+	return &tls.Config{
+		Certificates: []tls.Certificate{keyPair},
+	}, nil
+}
+
+func getCertByte(certCfg config.Cert) ([]byte, error) {
+	if len(certCfg.Content) > 0 {
+		return certCfg.Content, nil
 	}
 
-	return config, nil
+	return ioutil.ReadFile(certCfg.Path)
 }

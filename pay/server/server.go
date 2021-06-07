@@ -1,10 +1,11 @@
 package server
 
 import (
+	"strings"
+
 	"github.com/fideism/golang-wechat/pay/base"
 	"github.com/fideism/golang-wechat/pay/config"
 	"github.com/fideism/golang-wechat/util"
-	"strings"
 )
 
 // Server server
@@ -38,10 +39,10 @@ func (server *Server) DownloadBill(params util.Params) (*base.Response, error) {
 }
 
 // DownloadFundFlow 下载资金账单
-func (server *Server) DownloadFundFlow(params util.Params, cert config.Cert) (*base.Response, error) {
+func (server *Server) DownloadFundFlow(params util.Params, certCfg config.Cert) (*base.Response, error) {
 	params = base.Sign(params, server.Config)
 
-	tsl, err := base.CertTLSConfig(server.Config.MchID, cert.Path)
+	tsl, err := base.CertTLSConfig(server.Config.MchID, certCfg)
 	if err != nil {
 		return nil, err
 	}
