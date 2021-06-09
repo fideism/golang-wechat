@@ -284,7 +284,18 @@ payment.GetServer().BatchQueryComment(p)
 
 ```go
 
-func (n *Notify) AnalysisPayNotify(context []byte) (*PayNotifyXML, error) {
+func (n *Notify) AnalysisPayNotify(context []byte) (*PayNotify, error) {
 
 payment.GetNotify().AnalysisPayNotify(http_body)
+```
+
+---
+
+### 解析退款通知结果
+
+```go
+
+func (n *Notify) AnalysisRefundNotify(context []byte) (*RefundNotify, error) {
+
+payment.GetNotify().AnalysisRefundNotify(http_body)
 ```
