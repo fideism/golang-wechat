@@ -29,13 +29,13 @@ func (server *Server) DownloadBill(params util.Params) (*base.Response, error) {
 	// 如果出现错误，返回XML数据
 	if strings.Index(xmlStr, "<") == 0 {
 		return base.ProcessResponseXML(xmlStr)
-	} else { // 正常返回csv数据
-		return &base.Response{
-			ReturnCode: "SUCCESS",
-			ReturnMsg:  "OK",
-			Detail:     xmlStr,
-		}, nil
 	}
+
+	return &base.Response{
+		ReturnCode: "SUCCESS",
+		ReturnMsg:  "OK",
+		Detail:     xmlStr,
+	}, nil
 }
 
 // DownloadFundFlow 下载资金账单
@@ -54,13 +54,12 @@ func (server *Server) DownloadFundFlow(params util.Params, certCfg config.Cert) 
 	// 如果出现错误，返回XML数据
 	if strings.Index(xmlStr, "<") == 0 {
 		return base.ProcessResponseXML(xmlStr)
-	} else { // 正常返回csv数据
-		return &base.Response{
-			ReturnCode: "SUCCESS",
-			ReturnMsg:  "OK",
-			Detail:     xmlStr,
-		}, nil
 	}
+	return &base.Response{
+		ReturnCode: "SUCCESS",
+		ReturnMsg:  "OK",
+		Detail:     xmlStr,
+	}, nil
 }
 
 // Report 交易保障
