@@ -2,8 +2,8 @@ package base
 
 import "github.com/fideism/golang-wechat/pay/config"
 
+//正常模式
 const (
-	//正常模式
 	MicroPayURL          = "https://api.mch.weixin.qq.com/pay/micropay"
 	UnifiedOrderURL      = "https://api.mch.weixin.qq.com/pay/unifiedorder"
 	OrderQueryURL        = "https://api.mch.weixin.qq.com/pay/orderquery"
@@ -16,8 +16,10 @@ const (
 	ReportURL            = "https://api.mch.weixin.qq.com/payitil/report"
 	BatchQueryCommentURL = "https://api.mch.weixin.qq.com/billcommentsp/batchquerycomment"
 	AuthCodeToOpenidURL  = "https://api.mch.weixin.qq.com/tools/authcodetoopenid"
+)
 
-	//沙箱模式
+//沙箱模式
+const (
 	SandboxMicroPayURL          = "https://api.mch.weixin.qq.com/sandboxnew/pay/micropay"
 	SandboxUnifiedOrderURL      = "https://api.mch.weixin.qq.com/sandboxnew/pay/unifiedorder"
 	SandboxOrderQueryURL        = "https://api.mch.weixin.qq.com/sandboxnew/pay/orderquery"
@@ -95,7 +97,7 @@ func GetRefundQueryURL(c *config.Config) string {
 	return RefundQueryURL
 }
 
-// GetDownloadBill 下载交易账单
+// GetDownloadBillURL 获取下载交易账单URL
 func GetDownloadBillURL(c *config.Config) string {
 	if c.Sandbox {
 		return SandboxDownloadBillURL
