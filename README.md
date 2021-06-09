@@ -117,5 +117,9 @@ p.Set("notify_url", "https://github.com/fideism/golang-wechat")
 
 可以通过设置系统`LOG_LEVEL`来控制日志记录
 
+### 版本说明
+
+- V1.0.0 初始版本
+
 ### Based On :thumbsup:
 [silenceper/wechat](https://github.com/silenceper/wechat) 
