@@ -44,8 +44,8 @@ func (n *Notify) Fail(errMsg string) (*base.Response, error) {
 	return &params, nil
 }
 
-// PayNotifyXML 支付通知解析
-type PayNotifyXML struct {
+// PayNotify 支付通知解析
+type PayNotify struct {
 	Appid         string `xml:"appid" json:"appid"`
 	Attach        string `xml:"attach" json:"attach"`
 	BankType      string `xml:"bank_type" json:"bank_type"`
@@ -67,8 +67,8 @@ type PayNotifyXML struct {
 }
 
 // AnalysisPayNotify 解析支付通知回调
-func (n *Notify) AnalysisPayNotify(context []byte) (*PayNotifyXML, error) {
-	var response PayNotifyXML
+func (n *Notify) AnalysisPayNotify(context []byte) (*PayNotify, error) {
+	var response PayNotify
 	if err := xml.Unmarshal(context, &response); nil != err {
 		return nil, err
 	}
