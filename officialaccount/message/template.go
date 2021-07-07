@@ -52,7 +52,7 @@ type TemplateSendResult struct {
 }
 
 //Send 发送模板消息
-func (tpl *Template) Send(msg *TemplateMessage) (res TemplateSendResult, err error) {
+func (tpl *Template) Send(msg *TemplateMessage) (result TemplateSendResult, err error) {
 	var accessToken string
 	accessToken, err = tpl.GetAccessToken()
 	if err != nil {
@@ -63,7 +63,6 @@ func (tpl *Template) Send(msg *TemplateMessage) (res TemplateSendResult, err err
 	if err != nil {
 		return
 	}
-	var result TemplateSendResult
 	err = json.Unmarshal(response, &result)
 
 	return
