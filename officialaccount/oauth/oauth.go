@@ -84,13 +84,7 @@ func (oauth *Oauth) GetUserAccessToken(code string) (result ResAccessToken, err 
 		return
 	}
 	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("GetUserAccessToken error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return
-	}
+
 	return
 }
 
@@ -103,13 +97,7 @@ func (oauth *Oauth) RefreshAccessToken(refreshToken string) (result ResAccessTok
 		return
 	}
 	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("GetUserAccessToken error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return
-	}
+
 	return
 }
 
@@ -137,7 +125,6 @@ func (oauth *Oauth) CheckAccessToken(accessToken, openID string) (b bool, err er
 //UserInfo 用户授权获取到用户信息
 type UserInfo struct {
 	util.CommonError
-
 	OpenID     string   `json:"openid"`
 	Nickname   string   `json:"nickname"`
 	Sex        int32    `json:"sex"`
@@ -158,12 +145,6 @@ func (oauth *Oauth) GetUserInfo(accessToken, openID string) (result UserInfo, er
 		return
 	}
 	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("GetUserInfo error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return
-	}
+
 	return
 }

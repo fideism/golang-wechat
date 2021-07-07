@@ -45,14 +45,14 @@ type TemplateDataItem struct {
 	Color string `json:"color,omitempty"`
 }
 
-type resTemplateSend struct {
+type TemplateSendResult struct {
 	util.CommonError
 
 	MsgID int64 `json:"msgid"`
 }
 
 //Send 发送模板消息
-func (tpl *Template) Send(msg *TemplateMessage) (msgID int64, err error) {
+func (tpl *Template) Send(msg *TemplateMessage) (res TemplateSendResult, err error) {
 	var accessToken string
 	accessToken, err = tpl.GetAccessToken()
 	if err != nil {
@@ -63,16 +63,9 @@ func (tpl *Template) Send(msg *TemplateMessage) (msgID int64, err error) {
 	if err != nil {
 		return
 	}
-	var result resTemplateSend
+	var result TemplateSendResult
 	err = json.Unmarshal(response, &result)
-	if err != nil {
-		return
-	}
-	if result.ErrCode != 0 {
-		err = fmt.Errorf("template msg send error : errcode=%v , errmsg=%v", result.ErrCode, result.ErrMsg)
-		return
-	}
-	msgID = result.MsgID
+
 	return
 }
 
