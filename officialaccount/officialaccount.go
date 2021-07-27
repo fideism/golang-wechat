@@ -84,8 +84,8 @@ func (o *OfficialAccount) GetJs() *js.Js {
 }
 
 // GetUser 用户管理接口
-func (officialAccount *OfficialAccount) GetUser() *user.User {
-	return user.NewUser(officialAccount.ctx)
+func (o *OfficialAccount) GetUser() *user.User {
+	return user.NewUser(o.ctx)
 }
 
 // GetTemplate 模板消息接口

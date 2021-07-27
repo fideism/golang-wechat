@@ -26,8 +26,9 @@ func AppendConfig(p util.Params, config *config.Config) util.Params {
 	return p
 }
 
-// SignParams 签名自定义params
-func SignParams(p util.Params) string {
+// SignParamsMD5 md5签名自定义params
+func SignParamsMD5(p util.Params) string {
+	var sign string
 	var keys []string
 	for k := range p {
 		keys = append(keys, k)
@@ -45,7 +46,11 @@ func SignParams(p util.Params) string {
 		buf.WriteString(`&`)
 	}
 
-	return makeSign(p, buf)
+	dataMd5 := md5.Sum(buf.Bytes())
+
+	sign = hex.EncodeToString(dataMd5[:]) //需转换成切片
+
+	return strings.ToUpper(sign)
 }
 
 // Sign 生成签名
