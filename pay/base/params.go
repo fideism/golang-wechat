@@ -26,6 +26,28 @@ func AppendConfig(p util.Params, config *config.Config) util.Params {
 	return p
 }
 
+// SignParams 签名自定义params
+func SignParams(p util.Params) string {
+	var keys []string
+	for k := range p {
+		keys = append(keys, k)
+	}
+
+	// 由于切片的元素顺序是不固定，所以这里强制给切片元素加个顺序
+	sort.Strings(keys)
+
+	//创建字符缓冲
+	var buf bytes.Buffer
+	for _, k := range keys {
+		buf.WriteString(k)
+		buf.WriteString(`=`)
+		buf.WriteString(p.GetString(k))
+		buf.WriteString(`&`)
+	}
+
+	return makeSign(p, buf)
+}
+
 // Sign 生成签名
 func Sign(p util.Params, config *config.Config) util.Params {
 	p = AppendConfig(p, config)
