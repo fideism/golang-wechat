@@ -100,6 +100,16 @@ response, err := payment.GetOrder().Unify(p)
 // 返回
 //{FAIL appid和mch_id不匹配 map[return_code:FAIL return_msg:appid和mch_id不匹配]}
 //{SUCCESS OK map[result_code:SUCCESS return_code:SUCCESS return_msg:OK  trade_type:JSAPI.......]}
+
+// jsapi类型需要再次手动调用加密生成pay_sign
+// 重新加密生成sdk pay sign
+	response.Data.Set("pay_sign", base.SignParamsMD5(PrivateKey, wechatUtil.Params{
+		"appId":     cfg.AppID,
+		"timeStamp": t,
+		"nonceStr":  res.Data.GetString("nonce_str"),
+		"package":   prepay,
+		"signType":  "MD5",
+	}))
 ```
 
 ---
