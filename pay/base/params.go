@@ -27,7 +27,7 @@ func AppendConfig(p util.Params, config *config.Config) util.Params {
 }
 
 // SignParamsMD5 md5签名自定义params
-func SignParamsMD5(p util.Params) string {
+func SignParamsMD5(k string, p util.Params) string {
 	var sign string
 	var keys []string
 	for k := range p {
@@ -45,6 +45,10 @@ func SignParamsMD5(p util.Params) string {
 		buf.WriteString(p.GetString(k))
 		buf.WriteString(`&`)
 	}
+
+	// 加入apiKey作加密密钥
+	buf.WriteString(`key=`)
+	buf.WriteString(k)
 
 	dataMd5 := md5.Sum(buf.Bytes())
 
