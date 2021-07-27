@@ -6,10 +6,13 @@ import (
 	"crypto/md5"
 	"crypto/sha256"
 	"encoding/hex"
-	"github.com/fideism/golang-wechat/pay/config"
-	"github.com/fideism/golang-wechat/util"
 	"sort"
 	"strings"
+
+	logger "github.com/fideism/golang-wechat/log"
+	"github.com/fideism/golang-wechat/pay/config"
+	"github.com/fideism/golang-wechat/util"
+	"github.com/sirupsen/logrus"
 )
 
 // Params map[string]interface{}
@@ -58,6 +61,11 @@ func Sign(p util.Params, config *config.Config) util.Params {
 	buf.WriteString(config.Key)
 
 	p.Set("sign", makeSign(p, buf))
+
+	logger.Entry().WithFields(logrus.Fields{
+		"sign string": buf.String(),
+		"params":      p,
+	}).Info("支付签名加密")
 
 	return p
 }
