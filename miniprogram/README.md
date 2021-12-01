@@ -20,20 +20,22 @@ import (
 
 func main() {
 	redis := &cache.RedisOpts{
-		Host: "*.*.*.*:port",
+		Host:     "127.0.0.1:6379",
+		Database: 0,
 	}
 
 	config := &miniConfig.Config{
-		AppID:     `appid`,
-		AppSecret: `appsecret`,
+		AppID:     `xxxx`,
+		AppSecret: `xxx`,
 		Cache:     cache.NewRedis(redis),
 	}
 
-	// 初始化wechat实例，分别调用对应功能模块
-	wechat := wechat.NewWechat()
-	miniprogram := wechat.GetMiniProgram(config)
+	mini := miniprogram.NewMiniProgram(config)
 
-	// 单独获得officailAccount实例
-	// miniprogram := miniprogram.NewMiniProgram(config)
+	fmt.Println(mini)
+
+	rst, err := mini.GetAuth().Code2Session(`093MOqHa19WedC0AnXHa1oTu2B4MOqHi`)
+	fmt.Println(err)
+	fmt.Println(rst)
 }
 ```
