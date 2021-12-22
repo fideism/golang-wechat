@@ -4,22 +4,24 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	logger "github.com/fideism/golang-wechat/log"
-	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
+
+	logger "github.com/fideism/golang-wechat/log"
+	"github.com/sirupsen/logrus"
 )
 
 //HTTPGet get 请求
 func HTTPGet(uri string) ([]byte, error) {
-	logger.Entry().WithFields(logrus.Fields{
-		"url": uri,
-	}).Debug("发起微信get请求")
-
 	response, err := http.Get(uri)
+
+	logger.Entry().WithFields(logrus.Fields{
+		"url":      uri,
+		"response": response,
+	}).Info("发起微信get请求")
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +38,7 @@ func HTTPPost(uri string, data string) ([]byte, error) {
 	logger.Entry().WithFields(logrus.Fields{
 		"url":  uri,
 		"data": data,
-	}).Debug("发起微信post请求")
+	}).Info("发起微信post请求")
 
 	body := bytes.NewBuffer([]byte(data))
 	response, err := http.Post(uri, "", body)
@@ -56,7 +58,7 @@ func PostJSON(uri string, obj interface{}) ([]byte, error) {
 	logger.Entry().WithFields(logrus.Fields{
 		"url":  uri,
 		"data": obj,
-	}).Debug("发起微信post-json请求")
+	}).Info("发起微信post-json请求")
 
 	jsonData, err := json.Marshal(obj)
 	if err != nil {
@@ -83,7 +85,7 @@ func PostJSONWithRespContentType(uri string, obj interface{}) ([]byte, string, e
 	logger.Entry().WithFields(logrus.Fields{
 		"url":  uri,
 		"data": obj,
-	}).Debug("发起微信post-json-with请求")
+	}).Info("发起微信post-json-with请求")
 	jsonData, err := json.Marshal(obj)
 	if err != nil {
 		return nil, "", err
