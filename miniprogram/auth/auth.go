@@ -36,6 +36,7 @@ func (auth *Auth) Code2Session(jsCode string) (result ResCode2Session, err error
 	urlStr := fmt.Sprintf(code2SessionURL, auth.AppID, auth.AppSecret, jsCode)
 	var response []byte
 	response, err = util.HTTPGet(urlStr)
+	fmt.Println("小程序 Code2Session 原始返回", string(response))
 	if err != nil {
 		return
 	}
