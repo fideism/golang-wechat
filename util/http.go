@@ -24,12 +24,16 @@ func HTTPGet(uri string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Println("HTTPGet debug", uri)
+	fmt.Println("HTTPGet debug", response.StatusCode)
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("http get error : uri=%v , statusCode=%v", uri, response.StatusCode)
 	}
-	return ioutil.ReadAll(response.Body)
+
+	rst, e := ioutil.ReadAll(response.Body)
+	fmt.Println("HTTPGet debug", string(rst))
+	return rst, e
 }
 
 //HTTPPost post 请求
