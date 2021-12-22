@@ -4,6 +4,7 @@
 
 [![golang](https://img.shields.io/badge/Language-Go-green.svg?style=flat)](https://golang.org)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
+[![StyleCI](https://github.styleci.io/repos/279848303/shield?branch=debug)](https://github.styleci.io/repos/279848303?branch=debug)
 
 ## 目录
 - [缓存](./cache)
