@@ -20,11 +20,13 @@ func HTTPGet(uri string) ([]byte, error) {
 		"url": uri,
 	}).Info("发起微信get请求")
 	response, err := http.Get(uri)
+	fmt.Println("HTTPGet debug", uri)
 	if err != nil {
+		fmt.Println("HTTPGet error", err.Error())
 		return nil, err
 	}
-	fmt.Println("HTTPGet debug", uri)
 	fmt.Println("HTTPGet debug", response.StatusCode)
+
 	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("http get error : uri=%v , statusCode=%v", uri, response.StatusCode)
