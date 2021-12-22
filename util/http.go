@@ -19,8 +19,7 @@ func HTTPGet(uri string) ([]byte, error) {
 	response, err := http.Get(uri)
 
 	logger.Entry().WithFields(logrus.Fields{
-		"url":      uri,
-		"response": response,
+		"url": uri,
 	}).Info("发起微信get请求")
 	if err != nil {
 		return nil, err
