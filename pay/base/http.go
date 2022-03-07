@@ -6,18 +6,21 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	logger "github.com/fideism/golang-wechat/log"
-	"github.com/fideism/golang-wechat/util"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	logger "github.com/fideism/golang-wechat/log"
+	"github.com/fideism/golang-wechat/util"
+	"github.com/sirupsen/logrus"
 )
 
 // Response 返回结构
 type Response struct {
 	ReturnCode string      `json:"return_code"`
 	ReturnMsg  string      `json:"return_msg"`
+	ErrCode    string      `json:"err_code"`
+	ErrCodeDes string      `json:"err_code_des"`
 	Data       util.Params `json:"data"`
 	Detail     string      `json:"detail"`
 }
@@ -75,6 +78,8 @@ func ProcessResponseXML(xmlStr string) (*Response, error) {
 	}
 
 	response.ReturnMsg = params.GetString("return_msg")
+	response.ErrCode = params.GetString("err_code")
+	response.ErrCodeDes = params.GetString("err_code_des")
 	response.Data = params
 
 	return &response, nil
