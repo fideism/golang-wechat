@@ -21,6 +21,7 @@ type Response struct {
 	ReturnMsg  string      `json:"return_msg"`
 	ErrCode    string      `json:"err_code"`
 	ErrCodeDes string      `json:"err_code_des"`
+	ResultCode string      `json:"result_code"`
 	Data       util.Params `json:"data"`
 	Detail     string      `json:"detail"`
 }
@@ -80,6 +81,7 @@ func ProcessResponseXML(xmlStr string) (*Response, error) {
 	response.ReturnMsg = params.GetString("return_msg")
 	response.ErrCode = params.GetString("err_code")
 	response.ErrCodeDes = params.GetString("err_code_des")
+	response.ResultCode = params.GetString("result_code")
 	response.Data = params
 
 	return &response, nil
