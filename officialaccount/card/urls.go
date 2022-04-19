@@ -9,7 +9,7 @@ const (
 	updateURL        = "https://api.weixin.qq.com/card/update?access_token=%s"
 	deleteURL        = "https://api.weixin.qq.com/card/delete?access_token=%s"
 	createQrcodeURL  = "https://api.weixin.qq.com/card/qrcode/create?access_token=%s"
-	getHtmlURL       = "https://api.weixin.qq.com/card/mpnews/gethtml?access_token=%s"
+	getHTMLURL       = "https://api.weixin.qq.com/card/mpnews/gethtml?access_token=%s"
 	whitelistURL     = "https://api.weixin.qq.com/card/testwhitelist/set?access_token=%s"
 
 	memberSetActivateFieldURL = "https://api.weixin.qq.com/card/membercard/activateuserform/set"

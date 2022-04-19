@@ -10,6 +10,7 @@ import (
 	"github.com/fideism/golang-wechat/miniprogram/qrcode"
 	"github.com/fideism/golang-wechat/miniprogram/subscribe"
 	"github.com/fideism/golang-wechat/miniprogram/tcb"
+	"github.com/fideism/golang-wechat/miniprogram/url"
 )
 
 //MiniProgram 微信小程序相关API
@@ -65,4 +66,9 @@ func (miniProgram *MiniProgram) GetTcb() *tcb.Tcb {
 //GetSubscribe 小程序订阅消息
 func (miniProgram *MiniProgram) GetSubscribe() *subscribe.Subscribe {
 	return subscribe.NewSubscribe(miniProgram.ctx)
+}
+
+//GetURL 小程序链接
+func (miniProgram *MiniProgram) GetURL() *url.URL {
+	return url.NewURL(miniProgram.ctx)
 }

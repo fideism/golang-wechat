@@ -45,6 +45,7 @@ type TemplateDataItem struct {
 	Color string `json:"color,omitempty"`
 }
 
+// TemplateSendResult ...
 type TemplateSendResult struct {
 	util.CommonError
 

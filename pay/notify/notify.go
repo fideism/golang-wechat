@@ -82,17 +82,17 @@ type RefundNotifyXML struct {
 	ReturnMsg  string `xml:"return_msg,omitempty" json:"return_msg,omitempty"`
 	Appid      string `xml:"appid,omitempty" json:"appid,omitempty"`
 	SubAppid   string `xml:"sub_appid,omitempty" json:"sub_appid,omitempty"`
-	MchId      string `xml:"mch_id,omitempty" json:"mch_id,omitempty"`
-	SubMchId   string `xml:"sub_mch_id,omitempty" json:"sub_mch_id,omitempty"`
+	MchID      string `xml:"mch_id,omitempty" json:"mch_id,omitempty"`
+	SubMchID   string `xml:"sub_mch_id,omitempty" json:"sub_mch_id,omitempty"`
 	NonceStr   string `xml:"nonce_str,omitempty" json:"nonce_str,omitempty"`
 	ReqInfo    string `xml:"req_info,omitempty" json:"req_info,omitempty"`
 }
 
 // RefundNotifyDetail 退款详细信息
 type RefundNotifyDetail struct {
-	TransactionId       string `xml:"transaction_id,omitempty" json:"transaction_id,omitempty"`
+	TransactionID       string `xml:"transaction_id,omitempty" json:"transaction_id,omitempty"`
 	OutTradeNo          string `xml:"out_trade_no,omitempty" json:"out_trade_no,omitempty"`
-	RefundId            string `xml:"refund_id,omitempty" json:"refund_id,omitempty"`
+	RefundID            string `xml:"refund_id,omitempty" json:"refund_id,omitempty"`
 	OutRefundNo         string `xml:"out_refund_no,omitempty" json:"out_refund_no,omitempty"`
 	TotalFee            string `xml:"total_fee,omitempty" json:"total_fee,omitempty"`
 	SettlementTotalFee  string `xml:"settlement_total_fee,omitempty" json:"settlement_total_fee,omitempty"`

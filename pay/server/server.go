@@ -98,11 +98,11 @@ func (server *Server) BatchQueryComment(params util.Params) (*base.Response, err
 	// 如果出现错误，返回XML数据
 	if strings.Index(xmlStr, "<") == 0 {
 		return base.ProcessResponseXML(xmlStr)
-	} else { // 正常返回csv数据
-		return &base.Response{
-			ReturnCode: "SUCCESS",
-			ReturnMsg:  "OK",
-			Detail:     xmlStr,
-		}, nil
 	}
+	// 正常返回csv数据
+	return &base.Response{
+		ReturnCode: "SUCCESS",
+		ReturnMsg:  "OK",
+		Detail:     xmlStr,
+	}, nil
 }

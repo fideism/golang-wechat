@@ -2,29 +2,30 @@ package card
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/fideism/golang-wechat/officialaccount/context"
 	"github.com/fideism/golang-wechat/util"
-	"strings"
 )
 
-// Type 券类型
-type Type string
+// CouponType 券类型
+type CouponType string
 
 const (
 	// Groupon 团购券类型
-	Groupon Type = "GROUPON"
+	Groupon CouponType = "GROUPON"
 	// Cash 代金券类型
-	Cash Type = "CASH"
+	Cash CouponType = "CASH"
 	// Discount 折扣券类型
-	Discount Type = "DISCOUNT"
+	Discount CouponType = "DISCOUNT"
 	// Gift 兑换券类型
-	Gift Type = "GIFT"
+	Gift CouponType = "GIFT"
 	// GeneralCoupon 通用券。
-	GeneralCoupon Type = "GENERAL_COUPON"
+	GeneralCoupon CouponType = "GENERAL_COUPON"
 	// MemberCard 会员卡
-	MemberCard Type = "MEMBER_CARD"
+	MemberCard CouponType = "MEMBER_CARD"
 	// GeneralCard 礼品卡
-	GeneralCard Type = "GENERAL_CARD"
+	GeneralCard CouponType = "GENERAL_CARD"
 )
 
 // Status 卡券状态
@@ -57,7 +58,7 @@ func NewCard(context *context.Context) *Card {
 }
 
 // CreateCard 创建卡券
-func (card *Card) CreateCard(t Type, attrs util.Params) (cardID string, err error) {
+func (card *Card) CreateCard(t CouponType, attrs util.Params) (cardID string, err error) {
 	var token string
 	token, err = card.GetAccessToken()
 	if err != nil {
@@ -94,7 +95,7 @@ func (card *Card) CreateCard(t Type, attrs util.Params) (cardID string, err erro
 }
 
 // UpdateCard 修改卡券信息
-func (card *Card) UpdateCard(cardID string, t Type, attrs util.Params) (check bool, err error) {
+func (card *Card) UpdateCard(cardID string, t CouponType, attrs util.Params) (check bool, err error) {
 	var token string
 	token, err = card.GetAccessToken()
 	if err != nil {
@@ -270,14 +271,14 @@ func (card *Card) CreateCardQrcode(attr util.Params) (res Qrcode, err error) {
 	return
 }
 
-// GetHtml 图文消息群发卡券
-func (card *Card) GetHtml(cardID string) (content string, err error) {
+// GetHTML 图文消息群发卡券
+func (card *Card) GetHTML(cardID string) (content string, err error) {
 	var token string
 	token, err = card.GetAccessToken()
 	if err != nil {
 		return
 	}
-	url := fmt.Sprintf(getHtmlURL, token)
+	url := fmt.Sprintf(getHTMLURL, token)
 
 	var response []byte
 	response, err = util.PostJSON(url, map[string]interface{}{

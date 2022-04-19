@@ -4,7 +4,10 @@
 
 ## 包说明
 
--   analysis 数据分析相关 API
+- analysis 数据分析相关 API
+- auth 授权
+- url 小程序url link
+- qrcode 小程序二维码
 
 ## 快速入门
 
