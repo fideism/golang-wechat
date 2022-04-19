@@ -27,7 +27,6 @@ type GenerateRequest struct {
 	EnvVersion     string `json:"env_version"`
 	Path           string `json:"path"`
 	Query          string `json:"query"`
-	IsExpire       bool   `json:"is_expire"`
 	ExpireType     int8   `json:"expire_type"`
 	ExpireInterval int8   `json:"expire_interval"`
 }
