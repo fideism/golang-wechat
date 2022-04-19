@@ -28,7 +28,7 @@ type GenerateRequest struct {
 	Path           string `json:"path"`
 	Query          string `json:"query"`
 	ExpireType     int8   `json:"expire_type"`
-	ExpireTime     int64  `json:"expire_time`
+	ExpireTime     int64  `json:"expire_time"`
 	ExpireInterval int8   `json:"expire_interval"`
 }
 
